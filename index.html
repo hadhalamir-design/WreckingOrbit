@@ -63,6 +63,23 @@ button:active{transform:scale(.95)}
 .pop{position:fixed;pointer-events:none;z-index:7;font-weight:900;font-size:22px;white-space:nowrap;text-shadow:0 2px 0 rgba(0,0,0,.45),0 0 10px rgba(0,0,0,.4);animation:pop 1s ease-out forwards}
 @keyframes pop{0%{opacity:0;transform:translate(-50%,-30%) scale(.5)}20%{opacity:1;transform:translate(-50%,-60%) scale(1.25)}100%{opacity:0;transform:translate(-50%,-220%) scale(1)}}
 #flash{position:fixed;inset:0;pointer-events:none;z-index:4;opacity:0;background:rgba(255,208,0,.35)}
+.card{max-height:94vh;max-height:94dvh}
+#tools button,#rst{min-height:44px;min-width:44px}
+@media (max-width:480px){
+ .card{padding:20px 14px;border-width:4px;border-radius:30px}
+ .logo{font-size:44px}.logo.small{font-size:34px}
+ .tag{font-size:16px}
+ .how div{font-size:15px;gap:10px;margin:10px 0}
+ .how b{width:30px;height:30px;font-size:16px}
+ .pri{font-size:24px;padding:16px 44px}
+ #lvls{gap:6px}#lvls button{font-size:17px;padding:10px 0 6px}
+ #lvls button small{font-size:9px}
+ .sk{width:76px}.sk i{width:40px;height:40px}
+ #skins,#ups{gap:8px}
+ .up{font-size:13px;padding:12px 2px}
+ .big{font-size:28px}
+}
+@media (max-height:500px){.logo{font-size:36px}.card{padding:16px 18px}}
 </style></head><body>
 <div id="hud">
   <div class="chip c1"><div class="sm">Score</div><div class="big" id="score">0</div><div id="combo"></div><div class="sm">Best <span id="best">0</span></div><div class="sm" id="coinbox">🪙 <span id="coins">0</span></div></div>
@@ -421,10 +438,11 @@ function smash(){
 addEventListener('keydown',e=>{keys[e.code]=1;audioInit();hideHint();if(e.code==='KeyR')restart();if(e.code==='Space'){e.preventDefault();smash()}if(e.code==='KeyP')$('pz').click()});
 addEventListener('keyup',e=>{keys[e.code]=0});
 const cv=renderer.domElement;
-cv.addEventListener('pointerdown',e=>{ptr={x:e.clientX,y:e.clientY};pStart={x:e.clientX,y:e.clientY};rStart=rT;audioInit();hideHint()});
-addEventListener('pointermove',e=>{if(ptr){ptr.x=e.clientX;ptr.y=e.clientY}});
-addEventListener('pointerup',()=>{ptr=null});
-addEventListener('pointercancel',()=>{ptr=null});
+cv.addEventListener('pointerdown',e=>{if(ptr)return;ptr={x:e.clientX,y:e.clientY,id:e.pointerId};pStart={x:e.clientX,y:e.clientY};rStart=rT;audioInit();hideHint()});
+addEventListener('pointermove',e=>{if(ptr&&e.pointerId===ptr.id){ptr.x=e.clientX;ptr.y=e.clientY}});
+addEventListener('pointerup',e=>{if(ptr&&e.pointerId===ptr.id)ptr=null});
+addEventListener('pointercancel',e=>{if(ptr&&e.pointerId===ptr.id)ptr=null});
+addEventListener('blur',()=>{ptr=null});
 function hideHint(){if(uiOpen)return;started=true;$('hint').style.opacity=0}
 $('rst').addEventListener('click',restart);
 $('smash').addEventListener('click',()=>{audioInit();smash()});
