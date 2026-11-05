@@ -356,9 +356,10 @@ function musicStop(){
   if(g&&AC){g.gain.setTargetAtTime(0,AC.currentTime,.03);setTimeout(()=>{try{g.disconnect()}catch(e){}},500)}
 }
 function menuShown(){return !$('menu').classList.contains('hide')}
-// browsers need a tap/key before audio can play, so start the song on the first one
-addEventListener('pointerdown',()=>{if(menuShown())musicStart()},true);
-addEventListener('keydown',()=>{if(menuShown())musicStart()},true);
+// Start right away. If the browser blocks autoplay, the song is already queued and
+// begins on the very first tap, click, touch or key press anywhere on the page.
+['pointerdown','pointerup','mousedown','touchstart','click','keydown'].forEach(ev=>addEventListener(ev,()=>{if(menuShown()){musicStart();if(AC&&AC.state==='suspended')AC.resume()}},true));
+try{musicStart()}catch(e){}
 
 ball.addEventListener('collide',e=>{
   const t=performance.now();
