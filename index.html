@@ -168,6 +168,8 @@ button{min-height:40px}
 .vb{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;margin-left:5px;vertical-align:middle;flex:none}
 #cerr,#admsg{font-size:11px;font-weight:700;color:#ffd000;min-height:14px;margin-top:6px}
 #avlist{font-size:12px;margin-top:10px;text-align:left;opacity:.9}
+#blist{max-height:min(42vh,360px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding-right:4px;scrollbar-width:thin;scrollbar-color:#00e5ff #101744}
+#blist::-webkit-scrollbar{width:8px}#blist::-webkit-scrollbar-track{background:#101744}#blist::-webkit-scrollbar-thumb{background:#00e5ff;border-radius:4px}
 #ecnt,#emsg{font-size:11px;font-weight:700;margin-top:6px}
 #emsg{color:#ffd000;min-height:14px}
 </style></head><body>
@@ -210,6 +212,7 @@ button{min-height:40px}
 <button class="pri" id="bnew">＋ Build a level</button>
 <div id="bstat" class="sm"></div>
 <div id="bfilt"><button data-f="all" class="on">All</button><button data-f="friends">Friends</button><button data-f="following">Following</button></div>
+<input class="inp" id="bq" maxlength="20" placeholder="🔍 Search levels or creators" autocomplete="off" autocapitalize="off" spellcheck="false">
 <div class="sm sec" style="margin-top:12px">Levels built by players</div>
 <div id="blist"></div>
 <button class="bk" id="bback">◀ Back to menu</button>
@@ -1003,7 +1006,7 @@ async function fetchLevels(){
   if(CLOUD){
     try{
       const ac=new AbortController(),to=setTimeout(()=>ac.abort(),8000);
-      const r=await fetch(CLOUD+'/levels.json?orderBy=%22%24key%22&limitToLast=60',{signal:ac.signal});
+      const r=await fetch(CLOUD+'/levels.json?orderBy=%22%24key%22&limitToLast=200',{signal:ac.signal});
       clearTimeout(to);if(!r.ok)throw 0;
       const d=await r.json(),list=[];
       if(d&&typeof d==='object')Object.keys(d).forEach(k=>{const c=cleanLv(d[k],k);if(c)list.push(c)});
@@ -1020,15 +1023,17 @@ function drawThumb(cv,a){
   const g=cv.getContext('2d'),z=5;
   a.forEach((h,k)=>{if(!h)return;g.fillStyle=hCol(h);g.fillRect((k%GN)*z,Math.floor(k/GN)*z,z-1,z-1)});
 }
-let refreshId=0,bfilt='all';
+let refreshId=0,bfilt='all',bqT=0;
 async function refreshBuild(){
   const id=++refreshId,L=$('blist');L.textContent='Loading…';
   const res=await fetchLevels();if(id!==refreshId)return;
   if(bfilt!=='all'&&sess){try{const S=await socGet(ukey(sess)),set=new Set(bfilt==='friends'?S.friends:S.following);res.list=res.list.filter(l=>set.has(ukey(l.by)));if(id!==refreshId)return}catch(e){}}
   $('bstat').textContent=res.mode==='cloud'?'🌍 Global · everyone sees these levels':res.mode==='error'?'⚠ Could not reach the server · showing levels saved on this device':'📴 Offline mode · levels are saved on this device only (set CLOUD in the code to share globally)';
+  const qv=ukey($('bq').value.trim());
+  if(qv)res.list=res.list.filter(l=>l.name.toLowerCase().includes(qv)||ukey(l.by).includes(qv));
   let vs=new Set();try{vs=await checkVerified(res.list.map(l=>ukey(l.by)));if(id!==refreshId)return}catch(e){}
   L.textContent='';
-  if(!res.list.length){const d=document.createElement('div');d.className='tag';d.textContent=bfilt==='all'?'No levels yet. Be the first to build one!':'No levels from your '+bfilt+' yet.';L.appendChild(d);return}
+  if(!res.list.length){const d=document.createElement('div');d.className='tag';d.textContent=qv?'No levels match your search.':bfilt==='all'?'No levels yet. Be the first to build one!':'No levels from your '+bfilt+' yet.';L.appendChild(d);return}
   res.list.forEach(lv=>{
     const b=document.createElement('button');b.className='lv';
     const c=document.createElement('canvas');c.width=c.height=GN*5;drawThumb(c,lv.a);
@@ -1360,6 +1365,7 @@ async function sendChat(){
   $('aswitch').onclick=()=>setAMode(aMode==='login'?'signup':'login');
   $('aback').onclick=()=>{hideOv('auth');buildLvls();showOv('menu')};
   $('blogout').onclick=logout;
+  $('bq').addEventListener('input',()=>{clearTimeout(bqT);bqT=setTimeout(refreshBuild,250)});
   $('bppl').onclick=()=>{audioInit();openSoc()};
   $('sback').onclick=()=>openBuildTab();
   $('sadm').onclick=()=>{audioInit();openAdm()};
