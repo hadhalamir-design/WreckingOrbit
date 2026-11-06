@@ -1194,7 +1194,7 @@ async function renderSoc(){
   let S,keys=[];
   try{S=await socGet(me)}catch(e){L.textContent='Could not reach the server.';return}
   if(id!==socId)return;
-  $('scnt').textContent='Following '+S.following.length+' · Followers '+S.followers.length+' · Friends '+S.friends.length;
+  $('scnt').textContent='Logged in as '+sess+(VERIFY_OWNERS.indexOf(me)>=0?' ⭐ OWNER':'')+' · Following '+S.following.length+' · Followers '+S.followers.length+' · Friends '+S.friends.length;
   $('sreqtab').textContent='Requests'+(S.req.length?' ('+S.req.length+')':'');
   const msg=t=>{L.textContent='';const d=document.createElement('div');d.id='smsg';d.textContent=t;L.appendChild(d)};
   if(socTab==='find'){
