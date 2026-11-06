@@ -132,6 +132,26 @@ button{min-height:40px}
 @keyframes shk{from{transform:rotate(-12deg) scale(1.05)}to{transform:rotate(12deg) scale(1.15)}}
 .gem{display:block;width:84px;height:84px;border-radius:50%;margin:6px auto;border:3px solid rgba(255,255,255,.75);box-shadow:0 0 26px rgba(255,255,255,.5)}
 #cov .pri,#cov button{display:block;width:100%;margin:10px 0 0}
+#bopen{display:block;width:100%;margin:0 0 14px;font-size:16px;padding:12px 10px;background:#00e5ff;border-color:#000}
+#bt .card,#bld .card{max-width:420px}
+#bt .pri,#bld .pri{display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px}
+#bt button.bk,#bld button.bk{display:block;width:100%;margin:10px 0 0}
+#bstat{font-size:10px;opacity:.8;margin:6px 0 2px;font-weight:700;letter-spacing:.05em}
+#blist{margin-top:6px}
+.lv{display:flex;align-items:center;gap:10px;width:100%;margin:8px 0 0;text-align:left;padding:8px 10px;text-transform:none;letter-spacing:0}
+.lv canvas{flex:none;width:35px;height:35px;background:#0a1030;border:1px solid #2f6bff;image-rendering:pixelated}
+.lv .lm{flex:1;min-width:0}
+.lv .lm b{display:block;font-size:14px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv .lm small{display:block;font-size:10px;opacity:.75;font-weight:600}
+.lv>span{color:#ffd000;font-size:18px}
+.inp{display:block;width:100%;box-sizing:border-box;margin:8px 0 0;padding:10px;background:#101744;color:#fff;border:2px solid #00e5ff;border-radius:4px;font:inherit;font-size:14px;font-weight:700;user-select:text;-webkit-user-select:text}
+#egrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;width:min(100%,320px);aspect-ratio:1;margin:12px auto 6px;touch-action:none}
+#egrid div{background:#101744;border:2px solid #2a3470;border-radius:3px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#070b2a}
+#emodes{display:flex;gap:8px;margin-top:6px}
+#emodes button{flex:1;margin:0}
+#emodes button.on{background:#ffd000;color:#070b2a}
+#ecnt,#emsg{font-size:11px;font-weight:700;margin-top:6px}
+#emsg{color:#ffd000;min-height:14px}
 </style></head><body>
 <div id="hud">
   <div class="chip c1"><div class="sm">Score</div><div class="big" id="score">0</div><div id="combo"></div><div id="cbar"><div id="cfill"></div></div><div class="sm">Best <span id="best">0</span></div><div class="sm" id="coinbox">🪙 <span id="coins">0</span></div></div>
@@ -141,6 +161,7 @@ button{min-height:40px}
 <div id="banner"></div>
 <div id="flash"></div>
 <div id="menu" class="ov"><div class="card">
+<button id="bopen">🔨 Build · community levels</button>
 <div class="logo">WRECKING<br>ORBIT</div>
 <p class="tag">Swing the ball. Topple the tower. Beat the clock.</p>
 <div id="rank" class="sm"></div><div id="daily" class="hide"></div>
@@ -164,6 +185,26 @@ button{min-height:40px}
 <button class="pri" id="rn">Next level</button><button id="rm">Menu</button>
 </div></div>
 <div id="cov" class="ov hide" style="z-index:20"><div class="card"><div id="cbox">📦</div><div id="cname" class="logo small"></div><div id="cres" class="tag"></div><button class="hide" id="cagain">Open another</button><button class="pri hide" id="ceq">Equip</button><button class="hide" id="cx">Close</button></div></div>
+<div id="bt" class="ov hide"><div class="card">
+<div class="logo small">🔨 BUILD</div>
+<button class="pri" id="bnew">＋ Build a level</button>
+<div id="bstat" class="sm"></div>
+<div class="sm sec" style="margin-top:12px">Levels built by players</div>
+<div id="blist"></div>
+<button class="bk" id="bback">◀ Back to menu</button>
+</div></div>
+<div id="bld" class="ov hide"><div class="card">
+<div class="logo small">BUILD A LEVEL</div>
+<input class="inp" id="ename" maxlength="20" placeholder="Level name" autocomplete="off">
+<input class="inp" id="eby" maxlength="16" placeholder="Your name" autocomplete="off">
+<div id="egrid"></div>
+<div class="sm">Tap or drag squares · the number is the tower height</div>
+<div id="emodes"><button id="mup" class="on">＋ Raise</button><button id="mdn">－ Lower</button><button id="mclr">🧹 Clear</button></div>
+<div id="ecnt"></div><div id="emsg"></div>
+<button class="pri" id="etest">▶ Test it</button>
+<button class="pri" id="epub" style="background:#00e5ff">🌍 Publish</button>
+<button class="bk" id="ebk">◀ Back</button>
+</div></div>
 <div id="orb"><svg viewBox="-50 -50 100 100"><circle r="44" fill="none" stroke="#2a3470" stroke-width="1.5" stroke-dasharray="3 3"/><circle r="10.4" fill="none" stroke="#2a3470" stroke-width="1.5" stroke-dasharray="3 3"/><line x1="-46" y1="0" x2="46" y2="0" stroke="#1a2260" stroke-width="1"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#1a2260" stroke-width="1"/><circle id="orbc" r="26" fill="none" stroke="#00e5ff" stroke-width="2"/><line id="orbl" x1="0" y1="0" x2="26" y2="0" stroke="#ffd000" stroke-width="1.5"/><rect x="-5" y="-5" width="10" height="10" fill="#ff3b5c"/><circle id="orbd" cx="26" cy="0" r="5" fill="#ffd000" stroke="#000" stroke-width="1.5"/></svg><div id="orbt">ORBIT 5.0</div><div id="orbbar"><div id="orbfill"></div></div></div>
 <div id="tools"><button id="pz">Pause</button><button id="mt">🔊</button></div>
 <button id="ult"><i></i><span>⚡ ULTRA</span></button>
@@ -354,6 +395,7 @@ function buildSkins(){
 
 // state
 let angle=0,av=0,r=5,rT=5,tav=0,score=0,level=1,combo=0,comboT=0,shake=0,slowT=0,slowCd=0,acc=0,camA=1.2,clearing=false,lastHit=0,cfg=null,towerH=8,timeLeft=60,started=false,failed=false,paused=false,muted=false,uiOpen=true,lastWin=false,smashCd=0,extra=0;
+let customCfg=null;
 const CAMOFF=0.3;
 let hitStop=0,fovKick=0,dispScore=0,lastSec=0,rdyPrev=false,lastLand=0,total=parseInt(lsGet('wo_total','0'))||0;
 let blocks=[],pend=[],pStart=null,rStart=5,frenzy=0,rage=0,contUsed=0,pid=null;
@@ -436,7 +478,7 @@ function buildMaps(){
 function build(q){
   blocks.forEach(b=>{if(!b.removed)world.removeBody(b.body);scene.remove(b.mesh);b.mesh.material.dispose()});blocks=[];pend=[];
   applyMap();
-  cfg=levelCfg(level);const s=1.2;const hmax=cfg.cells.reduce((m,c)=>Math.max(m,c[1]),0)+1;
+  cfg=customCfg||levelCfg(level);const s=1.2;const hmax=cfg.cells.reduce((m,c)=>Math.max(m,c[1]),0)+1;
   for(const c of cfg.cells){
     const x=c[0]*s,z=c[2]*s,py=s/2+c[1]*s+0.01;
     const rr=Math.random();let type='norm';const M=MAPS[mapIdx];
@@ -454,14 +496,8 @@ function build(q){
     body.blk=blk;blocks.push(blk);
   }
   started=false;failed=false;timeLeft=cfg.time+ups.t*4;towerH=hmax*s;smashCd=0;runCoins=0;frenzy=0;rage=0;contUsed=0;
-  // clean slate: no leftover slow-mo, hit-stop, shake or stuck input from the previous run
-  slowT=0;slowCd=0;hitStop=0;acc=0;shake=0;fovKick=0;extra=0;lastHit=performance.now()+600;
-  ptr=null;pid=null;for(const k in keys)keys[k]=0;
-  // spawn the ball clear of the tower (wide towers used to overlap the ball at r=5 and blast apart on frame 1)
-  {let ext=0;for(const c of cfg.cells)ext=Math.max(ext,Math.hypot(c[0]*s,c[2]*s)+.85);
-   r=rT=Math.max(5,Math.min(8.5,ext+1.6))}
-  $('lvl').textContent=level+' · '+cfg.name;
-  if(!q)showBanner('Level '+level+' · '+cfg.name,1600);
+  $('lvl').textContent=(customCfg?'★':level)+' · '+cfg.name;
+  if(!q)showBanner((customCfg?'':'Level '+level+' · ')+cfg.name,1600);
 }
 
 // particles
@@ -514,26 +550,6 @@ function noise(d,vol,f){
   s.connect(fl);fl.connect(g);g.connect(AC.destination);s.start(t);s.stop(t+d);
 }
 const scale=[0,2,4,7,9];
-// menu theme song (synthesized, loops while any menu/result screen is open)
-const mf=m=>440*Math.pow(2,(m-69)/12);
-const TH_CH=[[69,72,76,72],[65,69,72,69],[67,72,76,72],[67,71,74,71]],TH_BS=[45,41,48,43],TH_AR=[0,1,2,3,2,1,2,3];
-let thN=0,thT=0;
-function thNote(f,t,d,type,vol){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;
-  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+d);
-  o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.03)}
-setInterval(()=>{
-  if(!AC||muted||!uiOpen||document.hidden||AC.state!=='running'){thT=0;return}
-  const now=AC.currentTime,sd=60/128/2;if(thT<now)thT=now+.05;
-  while(thT<now+.3){
-    const bar=Math.floor(thN/8)%4,k=thN%8;
-    thNote(mf(TH_CH[bar][TH_AR[k]]),thT,sd*1.6,'square',.035);
-    if(k%2===0)thNote(mf(TH_CH[bar][TH_AR[k]]+12),thT,sd*.9,'triangle',.03);
-    if(k===0||k===4)thNote(mf(TH_BS[bar]),thT,sd*3.2,'triangle',.11);
-    if(k===0||k===4)thNote(90,thT,.12,'sine',.12);
-    thT+=sd;thN++;
-  }
-},100);
-addEventListener('pointerdown',()=>audioInit(),{passive:true});
 function chime(c){const n=scale[c%5]+12*(Math.floor(c/5)%3);tone(392*Math.pow(2,n/12),.18,'triangle',.12,1)}
 
 ball.addEventListener('collide',e=>{
@@ -542,8 +558,8 @@ ball.addEventListener('collide',e=>{
   if(ob&&ob.blk&&ob.blk.type==='tnt'&&!ob.blk.queued){ob.blk.queued=true;pend.push({b:ob.blk,t:t})}
   const v=Math.abs(e.contact.getImpactVelocityAlongNormal());
   if(v<2.5||t-lastHit<70)return;lastHit=t;thud(v);shake=Math.min(1,shake+v/28);
-  if(v>13&&slowCd<=0&&started){slowT=0.3;slowCd=1.8}
-  if(v>10){if(started)hitStop=Math.min(.08,v/320);fovKick=Math.min(10,fovKick+v/4);noise(.25,Math.min(.3,v/60),3500);shock(ball.position,ballMesh.material.color,Math.min(3.5,1+v/8))}
+  if(v>13&&slowCd<=0){slowT=0.3;slowCd=1.8}
+  if(v>10){hitStop=Math.min(.08,v/320);fovKick=Math.min(10,fovKick+v/4);noise(.25,Math.min(.3,v/60),3500);shock(ball.position,ballMesh.material.color,Math.min(3.5,1+v/8))}
   if(v>9)vib(15);
   burst(ball.position,ballMesh.material.color,Math.min(14,Math.floor(v/1.5)),6);
   if(ob&&ob.blk&&v>11){burst(ob.position,ob.blk.col,10,9);popup(v>20?'CRUSH!':'WHAM!','#ffffff',ob.position,v>20?30:24);if(v>14){score+=Math.round(v);updHud()}}
@@ -670,7 +686,7 @@ function ult(){
 }
 addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('blur',()=>{ptr=null;pid=null});
-addEventListener('keydown',e=>{keys[e.code]=1;audioInit();hideHint();if(e.code==='KeyR')restart();if(e.code==='Space'){e.preventDefault();smash()}if(e.code==='KeyE')ult();if(e.code==='KeyP')$('pz').click()});
+addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='INPUT')return;keys[e.code]=1;audioInit();hideHint();if(e.code==='KeyR')restart();if(e.code==='Space'){e.preventDefault();smash()}if(e.code==='KeyE')ult();if(e.code==='KeyP')$('pz').click()});
 addEventListener('keyup',e=>{keys[e.code]=0});
 const cv=renderer.domElement;
 cv.addEventListener('pointerdown',e=>{if(pid!==null)return;pid=e.pointerId;ptr={x:e.clientX,y:e.clientY};pStart={x:e.clientX,y:e.clientY};rStart=rT;audioInit();hideHint()});
@@ -700,13 +716,6 @@ function substep(){
   const tx=Math.cos(angle)*r,tz=Math.sin(angle)*r;
   anchor.velocity.set((tx-anchor.position.x)/h,0,(tz-anchor.position.z)/h);
   world.step(h);
-  // deceleration: the ball bleeds speed when you're not steering, so it settles instead of swinging forever
-  {const steer=ptr||Math.abs(tav)>.01||keys.KeyW||keys.KeyS||keys.ArrowUp||keys.ArrowDown;
-   const k=steer?.35:(ball.position.y<2.6?2.2:1.4);   // per second; stronger when idle
-   const f=Math.exp(-k*h),v=ball.velocity;
-   v.x*=f;v.z*=f;if(!steer)v.y*=Math.exp(-.6*h);
-   const w=ball.angularVelocity,fw=Math.exp(-(steer?1:3)*h);w.x*=fw;w.y*=fw;w.z*=fw;
-   if(!steer&&v.x*v.x+v.z*v.z<.04){v.x*=.9;v.z*=.9}}   // settle fully at very low speed
 }
 const praise=['NICE!','GREAT!','AWESOME!','MEGA SMASH!','INSANE!!'];
 let last=performance.now();
@@ -833,7 +842,7 @@ function frame(now){
   renderer.render(scene,cam);
 }
 function showOv(id){$(id).classList.remove('hide');uiOpen=true}
-function hideOv(id){$(id).classList.add('hide');uiOpen=!($('menu').classList.contains('hide')&&$('res').classList.contains('hide'))}
+function hideOv(id){$(id).classList.add('hide');uiOpen=!['menu','res','bt','bld'].every(k=>$(k).classList.contains('hide'))}
 function buildLvls(){
   const w=$('lvls');w.innerHTML='';
   for(let i=1;i<=30;i++){
@@ -842,29 +851,30 @@ function buildLvls(){
     if(s===3)b.className='full';
     b.disabled=i>maxLvl;b.onclick=()=>startLevel(i);w.appendChild(b);
   }
-  buildSkins();buildMaps();loadMissions();buildMissions();buildRank();buildDaily();
+  buildSkins();buildMaps();
 }
-function startLevel(n){level=n;score=0;combo=0;clearing=false;angle=0;av=0;r=5;rT=5;hideOv('menu');hideOv('res');build();resetChain();updHud();$('hint').style.opacity=.8}
+function startLevel(n){customCfg=null;level=n;score=0;combo=0;clearing=false;angle=0;av=0;r=5;rT=5;hideOv('menu');hideOv('res');build();resetChain();updHud();$('hint').style.opacity=.8}
 function showResult(win){
   lastWin=win;$('banner').style.opacity=0;$('chest').classList.add('hide');$('cont').classList.add('hide');
   let nb=false;
   if(win){const perf=blocks.every(b=>b.gone);score+=100*level+(perf?300:0);const f=timeLeft/cfg.time,s=f>=.5?3:f>=.25?2:1;
-    $('rt').textContent=perf?'PERFECT CLEAR!':'LEVEL '+level+' CLEAR!';$('stars').textContent='★'.repeat(s)+'☆'.repeat(3-s);
-    addCoins(level*10+s*25+(perf?40:0));mp('win',1);
+    $('rt').textContent=perf?'PERFECT CLEAR!':(customCfg?'LEVEL':'LEVEL '+level)+' CLEAR!';$('stars').textContent='★'.repeat(s)+'☆'.repeat(3-s);
+    addCoins(level*10+s*25+(perf?40:0));
     $('rs').textContent='Score '+score+' · '+Math.ceil(timeLeft)+'s left · +'+runCoins+' 🪙';$('rn').textContent='Next level ▶';
-    if(!starsMap[level]){free++;lsSet('wo_free',free);$('rs').textContent+=' · 🎟 free chest!'}
+    if(!customCfg&&!starsMap[level]){free++;lsSet('wo_free',free);$('rs').textContent+=' · 🎟 free chest!'}
     const old=starsMap[level]||0;
-    if(s>old){starsMap[level]=s;lsSet('wo_stars',JSON.stringify(starsMap))}
-    if(level+1>maxLvl){maxLvl=level+1;lsSet('wo_max',maxLvl);const nm=MAPS.find(m=>m.need===maxLvl);if(nm)$('rs').textContent+=' · 🗺 '+nm.n+' unlocked!'}
+    if(!customCfg&&s>old){starsMap[level]=s;lsSet('wo_stars',JSON.stringify(starsMap))}
+    if(!customCfg&&level+1>maxLvl){maxLvl=level+1;lsSet('wo_max',maxLvl);const nm=MAPS.find(m=>m.need===maxLvl);if(nm)$('rs').textContent+=' · 🗺 '+nm.n+' unlocked!'}
   }else{$('rt').textContent='TIME UP';$('stars').textContent='☆☆☆';
     $('rs').textContent='Score '+score+' · '+Math.round(blocks.filter(b=>b.gone).length/blocks.length*100)+'% knocked down · +'+runCoins+' 🪙';$('rn').textContent='Retry ↻'}
   if(score>bestScore){bestScore=score;lsSet('wo_best',bestScore);nb=score>0}
   $('newbest').textContent=nb?'🏆 NEW BEST!':'';
+  if(customCfg)$('rn').textContent=win?'Play again ↻':'Retry ↻';
   updHud();showOv('res');
 }
 $('play').onclick=()=>{audioInit();startLevel(Math.min(maxLvl,1)||1)};
-$('rn').onclick=()=>{hideOv('res');if(lastWin)level++;clearing=false;angle=0;av=0;combo=0;build();resetChain();updHud();$('hint').style.opacity=.8};
-$('rm').onclick=()=>{hideOv('res');buildLvls();showOv('menu')};
+$('rn').onclick=()=>{hideOv('res');if(lastWin&&!customCfg)level++;clearing=false;angle=0;av=0;combo=0;build();resetChain();updHud();$('hint').style.opacity=.8};
+$('rm').onclick=()=>{hideOv('res');if(customCfg){const f=customCfg.from;customCfg=null;if(f==='test')openEditor();else openBuildTab();return}buildLvls();showOv('menu')};
 $('pz').onclick=()=>{paused=!paused;$('pz').textContent=paused?'Resume':'Pause';if(paused)showBanner('PAUSED',0);else $('banner').style.opacity=0};
 $('mt').onclick=()=>{muted=!muted;$('mt').textContent=muted?'🔇':'🔊'};
 if(skinIdx>=SKINS.length||owned.indexOf(skinIdx)<0)skinIdx=0;
@@ -883,6 +893,141 @@ $('dl').onclick=()=>{
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/html'}));
   a.download='Wrecking Orbit.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
 };
+
+// ===== BUILD SYSTEM =====
+// To make levels GLOBAL: create a free Firebase Realtime Database, set its rules to
+//   {"rules":{"levels":{".read":true,".write":true}}}
+// and paste its URL below, e.g. 'https://my-game-default-rtdb.firebaseio.com'
+// While this is empty, published levels are saved on this device only.
+const CLOUD='';
+const GN=7,MAXH=12,MAXB=120;
+let edH=new Array(GN*GN).fill(0),edMode=1,edPaint=null,edCells=[];
+function hCol(h){return h>0?'hsl('+Math.round((0.02+h/MAXH*.75)*360)+',100%,55%)':'#101744'}
+function encH(a){return a.map(v=>v.toString(36)).join('')}
+function decH(s){
+  if(typeof s!=='string'||s.length!==GN*GN)return null;
+  const out=[];for(let k=0;k<s.length;k++){const v=parseInt(s[k],36);out.push(isNaN(v)?0:Math.max(0,Math.min(MAXH,v)))}
+  return out;
+}
+function cleanTxt(v,d,n){return String(v==null?'':v).replace(/[\u0000-\u001f<>]/g,'').trim().slice(0,n)||d}
+function cleanLv(o,id){
+  if(!o||typeof o!=='object')return null;
+  const a=decH(o.h);if(!a)return null;
+  const n=a.reduce((x,y)=>x+y,0);if(n<1||n>MAXB)return null;
+  return{id:String(id||''),name:cleanTxt(o.name,'Untitled',20),by:cleanTxt(o.by,'Player',16),t:+o.t||0,a,n};
+}
+function cfgFrom(lv){
+  const cells=[];
+  lv.a.forEach((h,k)=>{const i=k%GN,j=Math.floor(k/GN);for(let y=0;y<h;y++)cells.push([i-(GN-1)/2,y,j-(GN-1)/2])});
+  return{name:lv.name,cells,mass:1.3,time:Math.max(45,Math.min(110,Math.round(20+cells.length))),need:.65};
+}
+function playCustom(lv,from){
+  customCfg=cfgFrom(lv);customCfg.from=from;
+  level=1;score=0;combo=0;clearing=false;angle=0;av=0;r=5;rT=5;
+  hideOv('bt');hideOv('bld');hideOv('res');
+  build();resetChain();updHud();$('hint').style.opacity=.8;
+}
+function ago(t){
+  const m=Math.max(0,Math.floor((Date.now()-t)/60000));
+  if(m<1)return 'just now';if(m<60)return m+'m ago';
+  const h=Math.floor(m/60);if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago';
+}
+async function fetchLevels(){
+  if(CLOUD){
+    try{
+      const ac=new AbortController(),to=setTimeout(()=>ac.abort(),8000);
+      const r=await fetch(CLOUD+'/levels.json?orderBy=%22%24key%22&limitToLast=60',{signal:ac.signal});
+      clearTimeout(to);if(!r.ok)throw 0;
+      const d=await r.json(),list=[];
+      if(d&&typeof d==='object')Object.keys(d).forEach(k=>{const c=cleanLv(d[k],k);if(c)list.push(c)});
+      list.sort((x,y)=>y.t-x.t);
+      return{list,mode:'cloud'};
+    }catch(e){}
+  }
+  let m=[];try{m=JSON.parse(lsGet('wo_mylv','[]'))||[]}catch(e){m=[]}
+  const list=[];if(Array.isArray(m))m.forEach((o,k)=>{const c=cleanLv(o,'l'+k);if(c)list.push(c)});
+  list.sort((x,y)=>y.t-x.t);
+  return{list,mode:CLOUD?'error':'local'};
+}
+function drawThumb(cv,a){
+  const g=cv.getContext('2d'),z=5;
+  a.forEach((h,k)=>{if(!h)return;g.fillStyle=hCol(h);g.fillRect((k%GN)*z,Math.floor(k/GN)*z,z-1,z-1)});
+}
+let refreshId=0;
+async function refreshBuild(){
+  const id=++refreshId,L=$('blist');L.textContent='Loading…';
+  const res=await fetchLevels();if(id!==refreshId)return;
+  $('bstat').textContent=res.mode==='cloud'?'🌍 Global · everyone sees these levels':res.mode==='error'?'⚠ Could not reach the server · showing levels saved on this device':'📴 Offline mode · levels are saved on this device only (set CLOUD in the code to share globally)';
+  L.textContent='';
+  if(!res.list.length){const d=document.createElement('div');d.className='tag';d.textContent='No levels yet. Be the first to build one!';L.appendChild(d);return}
+  res.list.forEach(lv=>{
+    const b=document.createElement('button');b.className='lv';
+    const c=document.createElement('canvas');c.width=c.height=GN*5;drawThumb(c,lv.a);
+    const m=document.createElement('div');m.className='lm';
+    const t=document.createElement('b');t.textContent=lv.name;
+    const sm=document.createElement('small');sm.textContent='by '+lv.by+' · 🧱 '+lv.n+(lv.t?' · '+ago(lv.t):'');
+    m.appendChild(t);m.appendChild(sm);
+    const p=document.createElement('span');p.textContent='▶';
+    b.appendChild(c);b.appendChild(m);b.appendChild(p);
+    b.onclick=()=>{audioInit();playCustom(lv,'play')};
+    L.appendChild(b);
+  });
+}
+function openBuildTab(){hideOv('menu');hideOv('bld');hideOv('res');showOv('bt');refreshBuild()}
+function edCount(){return edH.reduce((a,b)=>a+b,0)}
+function edDrawCell(i){const h=edH[i],c=edCells[i];c.textContent=h||'';c.style.background=hCol(h);c.style.borderColor=h?'#fff':'#2a3470'}
+function edDraw(){
+  edH.forEach((_,i)=>edDrawCell(i));
+  $('ecnt').textContent='🧱 '+edCount()+' / '+MAXB+' blocks · max height '+MAXH;
+}
+function setEdMsg(t){$('emsg').textContent=t}
+function openEditor(){
+  hideOv('bt');showOv('bld');
+  const by=$('eby');if(!by.value)by.value=lsGet('wo_pname','');
+  setEdMsg('');edDraw();
+}
+function edApply(i){
+  if(!edPaint||edPaint.has(i))return;edPaint.add(i);
+  const nh=edH[i]+edMode;if(nh<0||nh>MAXH)return;
+  if(edMode>0&&edCount()>=MAXB){setEdMsg('Block limit reached ('+MAXB+')');return}
+  edH[i]=nh;edDrawCell(i);$('ecnt').textContent='🧱 '+edCount()+' / '+MAXB+' blocks · max height '+MAXH;setEdMsg('');
+}
+function setMode(m){edMode=m;$('mup').classList.toggle('on',m>0);$('mdn').classList.toggle('on',m<0)}
+function curLv(){return{name:cleanTxt($('ename').value,'Untitled',20),by:cleanTxt($('eby').value,'Player',16),t:Date.now(),a:edH.slice(),n:edCount()}}
+async function publishLevel(){
+  const n=edCount();
+  if(n<6){setEdMsg('Build at least 6 blocks first');return}
+  if(Date.now()-(parseInt(lsGet('wo_pubt','0'))||0)<20000){setEdMsg('Wait a few seconds before publishing again');return}
+  const lv=curLv();lsSet('wo_pname',lv.by);
+  const rec={name:lv.name,by:lv.by,h:encH(lv.a),t:lv.t},btn=$('epub');
+  btn.disabled=true;setEdMsg('Publishing…');
+  try{
+    if(CLOUD){const r=await fetch(CLOUD+'/levels.json',{method:'POST',body:JSON.stringify(rec)});if(!r.ok)throw 0}
+    else{let m=[];try{m=JSON.parse(lsGet('wo_mylv','[]'))||[]}catch(e){m=[]}if(!Array.isArray(m))m=[];m.push(rec);lsSet('wo_mylv',JSON.stringify(m.slice(-50)))}
+    lsSet('wo_pubt',Date.now());
+    edH=new Array(GN*GN).fill(0);$('ename').value='';
+    tone(660,.12,'triangle',.15,1.5);setTimeout(()=>tone(990,.18,'triangle',.15,1),110);
+    openBuildTab();
+  }catch(e){setEdMsg('Could not publish. Check your connection.')}
+  btn.disabled=false;
+}
+(function initBuild(){
+  const g=$('egrid');
+  for(let i=0;i<GN*GN;i++){const d=document.createElement('div');d.dataset.i=i;g.appendChild(d);edCells.push(d)}
+  const cellAt=e=>{const el=document.elementFromPoint(e.clientX,e.clientY);return el&&el.parentNode===g?+el.dataset.i:-1};
+  g.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();edPaint=new Set();const i=cellAt(e);if(i>=0){edApply(i);tone(300+edMode*80,.05,'square',.05,1)}});
+  g.addEventListener('pointermove',e=>{if(!edPaint)return;const i=cellAt(e);if(i>=0)edApply(i)});
+  addEventListener('pointerup',()=>{edPaint=null});
+  addEventListener('pointercancel',()=>{edPaint=null});
+  $('mup').onclick=()=>setMode(1);$('mdn').onclick=()=>setMode(-1);
+  $('mclr').onclick=()=>{edH.fill(0);edDraw();setEdMsg('')};
+  $('bopen').onclick=()=>{audioInit();openBuildTab()};
+  $('bnew').onclick=()=>{audioInit();openEditor()};
+  $('bback').onclick=()=>{hideOv('bt');buildLvls();showOv('menu')};
+  $('ebk').onclick=()=>openBuildTab();
+  $('etest').onclick=()=>{if(edCount()<1){setEdMsg('Add some blocks first');return}audioInit();playCustom(curLv(),'test')};
+  $('epub').onclick=()=>{audioInit();publishLevel()};
+})();
 applySkin(skinIdx);applyUps();
 $('ceq').onclick=()=>{skinIdx=lastWon;lsSet('wo_skin',lastWon);applySkin(lastWon);buildSkins();$('cov').classList.add('hide')};
 $('cx').onclick=()=>$('cov').classList.add('hide');
