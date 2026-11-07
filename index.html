@@ -2490,7 +2490,7 @@ setInterval(()=>{
 // Paste your Firebase "Web API key" between the quotes (Firebase console > Project settings > General).
 // While it is empty the game keeps the old behaviour. When set, logins use Firebase Auth and
 // the database rules in firebase-rules.json make sure only a level's creator can edit or delete it.
-const FB_KEY='';
+const FB_KEY='AIzaSyADcbtmkvM5SvIs898b1fHd3Rwg4LRyBK4';
 const _xf=window.fetch.bind(window);
 function xTokLoad(){try{return JSON.parse(lsGet('wo_tok','null'))}catch(e){return null}}
 function xUid(){const t=xTokLoad();return(FB_KEY&&t&&t.uid)?t.uid:''}
