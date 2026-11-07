@@ -2016,7 +2016,7 @@ const XT=[
  ['lead','⚓ Lead'],['balloon','🎈 Balloon'],['glass','🧊 Glass'],['rocket','🚀 Rocket'],['diamond','💎 Diamond'],['nospec','✖ No special']
 ];
 let edBrush=0,edSetH=4,edFr=0,edBo=0,edWd=0,edGd=0,edFg=0,edBm=0;
-let advOn=false,advYaw=.8,advPitch=.75,advDist=22,advPD=0,xSkipMap=false;
+let advOn=false,advYaw=.8,advPitch=.75,advDist=22,advPD=0,xSkipMap=false,advTx=0,advTz=0;
 const advPts=new Map(),xq=[];
 let edRules=[];
 
@@ -2247,7 +2247,7 @@ setInterval(()=>{
   // advanced builder panel
   const wrap=document.createElement('div');
   wrap.innerHTML='<div id="advtop" class="hide"><button id="advback">◀</button><button id="advmode">🔨 Build</button><button id="advundo">↶</button><button id="advmir">🪞</button><button id="advrst">⟲</button><button id="advtest">▶ Test</button></div>'+
-   '<div id="adv" class="hide"><div id="advinfo" class="sm"></div><div class="sm sec" style="margin-top:6px">Tools</div><div id="advtools" class="chips"></div><div id="advsw" class="hide"></div>'+
+   '<div id="adv" class="hide"><div id="advgrip">━━ drag to resize · double-tap to collapse ━━</div><div id="advinfo" class="sm"></div><div class="sm sec" style="margin-top:6px">Tools</div><div id="advtools" class="chips"></div><div id="advsw" class="hide"></div>'+
    '<div class="sm sec" style="margin-top:8px">Brush</div><div id="advbr" class="chips"></div><div class="sm sec" style="margin-top:8px">Set-height value</div><div id="advh" class="chips"></div><div class="sm sec" style="margin-top:12px">⚙ Rules · when → do (max 12)</div><div id="advrules"></div></div>';
   while(wrap.firstChild)document.body.appendChild(wrap.firstChild);
   const T=$('advtools');
@@ -2256,14 +2256,14 @@ setInterval(()=>{
   $('advmode').onclick=()=>advSetMode(advMode==='build'?'move':'build');
   $('advundo').onclick=()=>{edUndoDo();advRefresh()};
   $('advmir').onclick=()=>{edMirror=(edMirror+1)%3;$('emir').textContent='🪞 Mirror: '+['off','left-right','4-way'][edMirror];advInfo()};
-  $('advrst').onclick=()=>{advYaw=.8;advPitch=.75;advDist=22};
+  $('advrst').onclick=()=>{advYaw=.8;advPitch=.75;advDist=22;advTx=0;advTz=0};
   $('advtest').onclick=()=>{advExit();$('etest').click()};
   const st=document.createElement('style');
   st.textContent='body.adv #hud,body.adv #smash,body.adv #ult,body.adv #abil,body.adv #orb,body.adv #tools,body.adv #hint,body.adv #banner{display:none!important}'+
    '#adv{position:fixed;left:0;right:0;bottom:0;z-index:9;background:rgba(7,11,42,.93);border-top:2px solid #00e5ff;padding:8px 10px calc(env(safe-area-inset-bottom,0px) + 8px);max-height:44vh;overflow-y:auto;touch-action:pan-y;text-align:center}'+
    '#advtop{position:fixed;left:0;right:0;top:0;z-index:9;display:flex;gap:5px;padding:calc(env(safe-area-inset-top,0px) + 8px) 8px 0;pointer-events:none}'+
    '#advtop button{pointer-events:auto;flex:1;padding:10px 2px;font-size:13px;min-height:0}#advtop #advmode{flex:2.2;font-size:14px}#advtop button.on{background:#ffd000;color:#070b2a}'+
-   '#advinfo{opacity:.9}#advsw{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}'+
+   '#advgrip{position:sticky;top:-8px;margin:-8px -10px 6px;padding:12px 0 10px;background:#0b1240;text-align:center;font-size:11px;font-weight:800;letter-spacing:.08em;color:#00e5ff;touch-action:none;cursor:ns-resize;z-index:2;border-bottom:1px solid #2a3470;user-select:none}#advinfo{opacity:.9}#advsw{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}'+
    '#advsw button{width:28px;height:28px;min-height:0;padding:0;border-radius:50%;border:2px solid #fff;box-shadow:none}#advsw button.on{border-color:#ffd000;transform:scale(1.25)}';
   document.head.appendChild(st);
 })();
@@ -2293,13 +2293,13 @@ const _xRR=renderer.render;
 renderer.render=function(s,c){
   if(advOn){
     const cp=Math.cos(advPitch);
-    cam.position.set(Math.cos(advYaw)*cp*advDist,Math.sin(advPitch)*advDist+1,Math.sin(advYaw)*cp*advDist);
-    cam.lookAt(0,2,0);
+    cam.position.set(advTx+Math.cos(advYaw)*cp*advDist,Math.sin(advPitch)*advDist+1,advTz+Math.sin(advYaw)*cp*advDist);
+    cam.lookAt(advTx,2,advTz);
   }
   return _xRR.call(renderer,s,c);
 };
 function advRebuild(){const c=cfgFrom(curLv());c.from='adv';customCfg=c;build(1)}
-function advInfo(){$('advinfo').textContent='🧱 '+edCount()+' / '+MAXB+' · tool: '+edTool+' · mirror '+['off','L-R','4-way'][edMirror]+(advMode==='build'?' · BUILD: tap or drag = build · 2 fingers = orbit/zoom':' · MOVE: drag = orbit · pinch = zoom')+($('emsg').textContent?' · '+$('emsg').textContent:'')}
+function advInfo(){$('advinfo').textContent='🧱 '+edCount()+' / '+MAXB+' · tool: '+edTool+' · mirror '+['off','L-R','4-way'][edMirror]+(advMode==='build'?' · BUILD: tap or drag = build · 2 fingers = orbit/zoom':' · MOVE: drag = orbit · pinch = zoom')+' · ⌨ WASD move · arrows orbit · Q/E zoom'+($('emsg').textContent?' · '+$('emsg').textContent:'')}
 function advRefresh(){if(!advOn)return;advRebuild();advInfo()}
 function advEnter(){
   advOn=true;document.body.classList.add('adv');
@@ -2584,6 +2584,38 @@ async function refreshBuild(){
     L.appendChild(b);
   });
 }
+
+// ---------- 11) draggable panel + WASD camera in the advanced builder ----------
+(function(){
+  const g=$('advgrip'),a=$('adv');let drag=false,last=0;
+  g.addEventListener('pointerdown',e=>{drag=true;try{g.setPointerCapture(e.pointerId)}catch(x){}e.preventDefault()});
+  g.addEventListener('pointermove',e=>{if(!drag)return;const h=Math.max(56,Math.min(innerHeight*.88,innerHeight-e.clientY));a.style.height=h+'px';a.style.maxHeight=h+'px'});
+  g.addEventListener('pointerup',()=>{
+    drag=false;const n=Date.now();
+    if(n-last<350){const c=a.dataset.c==='1';a.dataset.c=c?'0':'1';const h=c?Math.round(innerHeight*.44):56;a.style.height=h+'px';a.style.maxHeight=h+'px'}
+    last=n;
+  });
+  g.addEventListener('pointercancel',()=>{drag=false});
+})();
+const advKeys={};
+addEventListener('keydown',e=>{
+  if(!advOn)return;const t=e.target&&e.target.tagName;if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
+  advKeys[e.code]=1;if(/^(Arrow|Space)/.test(e.code))e.preventDefault();
+});
+addEventListener('keyup',e=>{advKeys[e.code]=0});
+addEventListener('blur',()=>{for(const k in advKeys)advKeys[k]=0});
+let advLT=performance.now();
+setInterval(()=>{
+  const n=performance.now(),dt=Math.min(.1,(n-advLT)/1000);advLT=n;
+  if(!advOn)return;
+  const k=advKeys,sp=10*dt*advDist/22,fx=-Math.cos(advYaw),fz=-Math.sin(advYaw),rx=-fz,rz=fx;
+  let mx=0,mz=0;
+  if(k.KeyW){mx+=fx;mz+=fz}if(k.KeyS){mx-=fx;mz-=fz}if(k.KeyD){mx+=rx;mz+=rz}if(k.KeyA){mx-=rx;mz-=rz}
+  advTx=Math.max(-14,Math.min(14,advTx+mx*sp));advTz=Math.max(-14,Math.min(14,advTz+mz*sp));
+  if(k.ArrowLeft)advYaw+=1.8*dt;if(k.ArrowRight)advYaw-=1.8*dt;
+  if(k.ArrowUp)advPitch=Math.min(1.45,advPitch+1.2*dt);if(k.ArrowDown)advPitch=Math.max(.15,advPitch-1.2*dt);
+  if(k.KeyQ)advDist=Math.max(8,advDist*(1-dt*1.2));if(k.KeyE)advDist=Math.min(60,advDist*(1+dt*1.2));
+},16);
 /* ============== END BUILDER+ PATCH ============== */
 
 </script></body></html>
