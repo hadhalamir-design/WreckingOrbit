@@ -224,6 +224,7 @@ body.lh #abil{left:auto;right:8px}
 <div id="flash"></div>
 <div id="menu" class="ov"><div class="card">
 <button id="bopen">🔨 Build · community levels</button>
+<button id="dl" style="display:block;width:100%;margin:0 0 10px;font-size:16px;padding:12px 10px;background:#ff3b5c;color:#fff;border-color:#000;box-shadow:4px 4px 0 #000">⬇ Download the app</button>
 <div class="logo">WRECKING<br>ORBIT</div>
 <p class="tag">Swing the ball. Topple the tower. Beat the clock.</p>
 <div id="rank" class="sm"></div><div id="plv" class="sm" style="margin-top:6px"></div><div id="xpbar"><div id="xpf"></div></div><div id="daily" class="hide"></div>
@@ -234,7 +235,7 @@ body.lh #abil{left:auto;right:8px}
 <div><b>4</b>Swing fast, then tap 💥 SMASH when the line turns yellow for a PERFECT smash (bad timing = weak smash)</div>
 <div><b>5</b>Topple blocks to fill the ⚡ meter, then tap ULTRA to blast everything near the ball</div>
 <div><b>6</b>☄ Meteors aim for YOUR ball! Swing away from the red ring to dodge for bonus points. A hit costs 3s and your streak</div><div><b>7</b>🎯 Land PERFECT smashes in a row to build a streak: score and coins go up. A mistimed smash loses it</div><div><b>8</b>Cyan 💠 weak points cause a mini collapse. Hit a boss tower's glowing core to bring it all down</div><div><b>9</b>♾ Endless: every wave is bigger. Pick a perk after each one and see how far you get</div><div><b>10</b>⏳ Slow-Mo · 🛡 Shield · 🌋 Quake are your abilities: tap the buttons on the side (keys 1, 2, 3). Perks only come from Endless waves</div></div>
-<button id="dl" style="display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px 10px;background:#ff3b5c;color:#fff;border-color:#000;box-shadow:4px 4px 0 #000">⬇ Download the app</button><button class="pri" id="play">Play</button><button class="pri" id="endb" style="display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px;background:#00e5ff">♾ Endless</button><button class="pri" id="dlyb" style="display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px;background:#fff">📅 Daily challenge</button>
+<button class="pri" id="play">Play</button><button class="pri" id="endb" style="display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px;background:#00e5ff">♾ Endless</button><button class="pri" id="dlyb" style="display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px;background:#fff">📅 Daily challenge</button>
 <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button id="mmt">🔊 Sound: on</button><button id="lhb">🖐 Buttons: right</button></div>
 <div class="sm sec">Maps</div><div id="maps"></div>
 <div class="sm sec">Today's missions</div><div id="missions"></div>
@@ -3210,11 +3211,27 @@ renderer.render=function(s,c){
 })();
 
 // ===== DOWNLOAD BUTTON: web = download the PC app, inside the app = hidden =====
-const APP_URL='https://www.dropbox.com/scl/fi/uo09szfpq3elwkmaj1cl5/wrecking-orbit-app.zip?rlkey=ullae5lt1dw515ap9aynbnzpb&st=nx1aecce&dl=1';
+const APP_URL='https://www.dropbox.com/scl/fi/m7smm7e4gy24plurgpy0r/Wrecking-Orbit-Setup-1.0.0.exe?rlkey=ihhz27gmfaxy4tvo3f4oi9rbf&st=dpfaqeli&dl=1';
+// Features that need the app (web only). Change this list to lock/unlock others.
+const LOCKED_IDS=['endb','bopen'];
 if(navigator.userAgent.includes('Electron')){
   $('dl').style.display='none';
 }else{
-  $('dl').textContent='⬇ Download the app';
+  $('dl').textContent='⬇ Download the app (unlocks everything)';
   $('dl').onclick=()=>{location.href=APP_URL};
+  const st=document.createElement('style');
+  st.textContent='.lk{opacity:.55}.lk::after{content:" 🔒"}@keyframes dlp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}.dlp{animation:dlp .5s 3}';
+  document.head.appendChild(st);
+  LOCKED_IDS.forEach(id=>{const e=$(id);e&&e.classList.add('lk')});
+  document.addEventListener('click',e=>{
+    const b=e.target.closest&&e.target.closest('button');
+    if(!b||!LOCKED_IDS.includes(b.id))return;
+    e.stopImmediatePropagation();e.preventDefault();
+    const d=$('dl');d.classList.remove('dlp');void d.offsetWidth;d.classList.add('dlp');
+    const t=document.createElement('div');
+    t.textContent='🔒 Download the app to unlock this';
+    t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#ff3b5c;color:#fff;padding:10px 16px;border:3px solid #000;box-shadow:4px 4px 0 #000;font:bold 15px sans-serif;z-index:99;border-radius:8px';
+    document.body.appendChild(t);setTimeout(()=>t.remove(),2200);
+  },true);
 }
 </script></body></html>
