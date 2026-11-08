@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://wreckingorbit.duckdns.org/sitemap.xml
-Add robots.txt and sitemap.xml
