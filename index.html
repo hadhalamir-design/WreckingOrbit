@@ -3224,9 +3224,16 @@ if(navigator.userAgent.includes('Electron')){
   $('dl').after(note);
   const inf=document.createElement('details');
   inf.className='sm';inf.style.cssText='margin:0 0 10px;text-align:left;background:rgba(255,255,255,.08);border-radius:8px;padding:8px 10px;cursor:pointer';
-  inf.innerHTML='<summary style="font-weight:bold">▶ Why does my browser or Windows show a warning?</summary>'
-   +'<div style="margin-top:6px;line-height:1.4;cursor:default">The app is new and not many people have downloaded it yet, and it is not paid-for code-signed. So Edge, Chrome and Windows show a warning for any new app like this. It is safe, and the warning does not mean there is a virus.<br><br>'
-   +'<b>To install it:</b><br>1. In the download list click <b>⋯</b>, then <b>Keep</b> (then <b>Keep anyway</b>).<br>2. If Windows shows a blue screen, click <b>More info</b>, then <b>Run anyway</b>.<br><br>'
+  inf.innerHTML='<summary style="font-weight:bold">▶ 🛡 Is it safe? Why is there a warning?</summary>'
+   +'<div style="margin-top:8px;line-height:1.5;cursor:default">'
+   +'<b>Yes, it is safe.</b> Your browser says <i>"isn\u2019t commonly downloaded"</i> only because the app is brand new and few people have downloaded it yet. It does not mean anything is wrong. Every new app gets this message until enough people install it.<br><br>'
+   +'<b>What you are getting:</b><br>'
+   +'✅ The exact same game you see on this website, nothing extra<br>'
+   +'✅ Installs just for you, no admin rights needed<br>'
+   +'✅ Removes cleanly any time in Windows Settings &gt; Apps<br>'
+   +'✅ Runs in its own window with its own icon<br><br>'
+   +'<b>To install:</b><br>1. In the download list click <b>⋯</b>, then <b>Keep</b> (then <b>Keep anyway</b>).<br>2. Open the file and install it.<br><br>'
+   +'<b>Rather not install?</b> No problem, just press Play, the website is the same game.<br><br>'
    +'<b>Offline:</b> the app runs offline, but community levels and accounts need internet.</div>';
   note.after(inf);
   $('dl').onclick=()=>{
