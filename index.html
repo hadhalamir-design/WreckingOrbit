@@ -3213,12 +3213,29 @@ renderer.render=function(s,c){
 // ===== DOWNLOAD BUTTON: web = download the PC app, inside the app = hidden =====
 const APP_URL='https://www.dropbox.com/scl/fi/m7smm7e4gy24plurgpy0r/Wrecking-Orbit-Setup-1.0.0.exe?rlkey=ihhz27gmfaxy4tvo3f4oi9rbf&st=dpfaqeli&dl=1';
 // Features that need the app (web only). Change this list to lock/unlock others.
-const LOCKED_IDS=['endb','bopen'];
+const LOCKED_IDS=[];
 if(navigator.userAgent.includes('Electron')){
   $('dl').style.display='none';
 }else{
   $('dl').textContent='⬇ Download the app (unlocks everything)';
-  $('dl').onclick=()=>{location.href=APP_URL};
+  const note=document.createElement('div');
+  note.className='sm';note.style.cssText='margin:-4px 0 10px;text-align:center';
+  note.textContent='💾 The app runs offline. Online features (community levels, accounts) need internet.';
+  $('dl').after(note);
+  const inf=document.createElement('details');
+  inf.className='sm';inf.style.cssText='margin:0 0 10px;text-align:left;background:rgba(255,255,255,.08);border-radius:8px;padding:8px 10px;cursor:pointer';
+  inf.innerHTML='<summary style="font-weight:bold">▶ Why does my browser or Windows show a warning?</summary>'
+   +'<div style="margin-top:6px;line-height:1.4;cursor:default">The app is new and not many people have downloaded it yet, and it is not paid-for code-signed. So Edge, Chrome and Windows show a warning for any new app like this. It is safe, and the warning does not mean there is a virus.<br><br>'
+   +'<b>To install it:</b><br>1. In the download list click <b>⋯</b>, then <b>Keep</b> (then <b>Keep anyway</b>).<br>2. If Windows shows a blue screen, click <b>More info</b>, then <b>Run anyway</b>.<br><br>'
+   +'<b>Offline:</b> the app runs offline, but community levels and accounts need internet.</div>';
+  note.after(inf);
+  $('dl').onclick=()=>{
+    location.href=APP_URL;
+    const t=document.createElement('div');
+    t.textContent='💾 Reminder: the app is offline. Community levels and accounts need internet.';
+    t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:90%;text-align:center;background:#ff3b5c;color:#fff;padding:10px 16px;border:3px solid #000;box-shadow:4px 4px 0 #000;font:bold 15px sans-serif;z-index:99;border-radius:8px';
+    document.body.appendChild(t);setTimeout(()=>t.remove(),5000);
+  };
   const st=document.createElement('style');
   st.textContent='.lk{opacity:.55}.lk::after{content:" 🔒"}@keyframes dlp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}.dlp{animation:dlp .5s 3}';
   document.head.appendChild(st);
