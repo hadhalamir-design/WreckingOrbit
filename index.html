@@ -3295,4 +3295,177 @@ if(navigator.userAgent.includes('Electron')){
     document.body.appendChild(t);setTimeout(()=>t.remove(),2200);
   },true);
 }
+
+/* ===== MOD MENU + BAD-WORD FILTER PATCH =====
+   Combined with Wrecking Orbit. Appended inside the final script block.
+*/
+
+// ---------- 1) BAD-WORD FILTER ----------
+const BAD_WORDS=['fuck','shit','bitch','asshole','bastard','dick','cock','pussy','cunt','whore','slut','nigger','nigga','fag','faggot','retard','damn','crap','piss','wanker','twat','bollocks','dumbass','jackass','motherfucker','porn','rape'];
+const LEET={a:'[a@4]',e:'[e3]',i:'[i1!|]',o:'[o0]',s:'[s$5]',t:'[t7]',l:'[l1]'};
+const BAD_RX=new RegExp('(^|[^a-z0-9])((?:'+BAD_WORDS.slice().sort((a,b)=>b.length-a.length).map(w=>w.split('').map(c=>(LEET[c]||c)+'+').join('[._-]*')).join('|')+')(?:s|es|ed|er|ers|ing|in|y|z)?)(?=$|[^a-z0-9])','gi');
+function maskWord(w){
+  let i=-1;
+  for(let k=1;k<w.length;k++)if(/[aeiou@4310!|]/i.test(w[k])){i=k;break}
+  if(i<0)i=Math.min(1,w.length-1);
+  return w.slice(0,i)+'*'+w.slice(i+1);
+}
+function filterBad(s){return String(s==null?'':s).replace(BAD_RX,(a,pre,w)=>pre+maskWord(w))}
+const _ctOrig=cleanTxt;
+cleanTxt=function(v,d,n){return _ctOrig(filterBad(v),d,n)};
+
+// ---------- 2) BANS ----------
+let banSet=new Set(),banAt=0;
+async function loadBans(force){
+  if(!force&&Date.now()-banAt<30000)return banSet;
+  try{
+    let d;
+    if(CLOUD){const r=await fetch(CLOUD+'/banned.json');if(r.ok)d=await r.json()}
+    else d=JSON.parse(lsGet('wo_banned','{}'));
+    const s=new Set();
+    if(d&&typeof d==='object')Object.keys(d).forEach(k=>{if(d[k]&&validUser(k))s.add(k)});
+    banSet=s;banAt=Date.now();
+  }catch(e){}
+  return banSet;
+}
+async function isBanned(n){return(await loadBans()).has(ukey(n))}
+async function setBan(key,on,uid){
+  if(VERIFY_OWNERS.indexOf(key)>=0)throw 'You cannot ban an owner';
+  if(CLOUD){
+    const sec=$('msec').value.trim();if(!sec)throw 'Paste the Firebase database secret first';
+    const a='?auth='+encodeURIComponent(sec);
+    let r=await fetch(CLOUD+'/banned/'+key+'.json'+a,on?{method:'PUT',body:'true'}:{method:'DELETE'});
+    if(!r.ok)throw r.status===401?'Wrong database secret':'Could not save';
+    if(uid&&/^[A-Za-z0-9]{10,40}$/.test(uid))await fetch(CLOUD+'/bannedUid/'+uid+'.json'+a,on?{method:'PUT',body:'true'}:{method:'DELETE'});
+  }else{
+    let d={};try{d=JSON.parse(lsGet('wo_banned','{}'))||{}}catch(e){}
+    if(on)d[key]=true;else delete d[key];lsSet('wo_banned',JSON.stringify(d));
+  }
+  banAt=0;await loadBans(true);
+}
+async function delLevel(lv){
+  if(CLOUD){
+    const sec=$('msec').value.trim();if(!sec)throw 'Paste the Firebase database secret first';
+    const r=await fetch(CLOUD+'/levels/'+lv.id+'.json?auth='+encodeURIComponent(sec),{method:'DELETE'});
+    if(!r.ok)throw r.status===401?'Wrong database secret':'Could not delete';
+  }else{
+    let m=[];try{m=JSON.parse(lsGet('wo_mylv','[]'))||[]}catch(e){}
+    m.splice(+String(lv.id).slice(1),1);lsSet('wo_mylv',JSON.stringify(m));
+  }
+}
+const _flRaw=fetchLevels;
+fetchLevels=async function(){
+  const res=await _flRaw(),b=await loadBans();
+  res.list=res.list.filter(l=>!b.has(ukey(l.by)));
+  return res;
+};
+const _saBan=submitAuth;
+submitAuth=async function(){
+  const nm=$('auser').value.trim();
+  if(aMode==='signup'&&filterBad(nm)!==nm){setAMsg('That username is not allowed');return}
+  if(validUser(nm)&&await isBanned(nm)){setAMsg('🚫 This account is banned');return}
+  return _saBan();
+};
+const _plBan=publishLevel;
+publishLevel=async function(){
+  if(sess&&await isBanned(sess)){setEdMsg('🚫 Your account is banned');return}
+  return _plBan();
+};
+const _scBan=sendChat;
+sendChat=async function(){
+  if(sess&&await isBanned(sess)){$('cerr').textContent='🚫 Your account is banned';return}
+  return _scBan();
+};
+
+// ---------- 3) MOD MENU UI ----------
+(function(){
+  const st=document.createElement('style');
+  st.textContent='#mod .card{max-width:440px}#mod .pri,#mod button.bk{display:block;width:100%;margin:10px 0 0;font-size:15px;padding:11px}#mmsg{font-size:12px;font-weight:700;color:#ffd000;min-height:14px;margin-top:6px}#mlist{max-height:44vh;overflow-y:auto;touch-action:pan-y}#mtabs{display:flex;gap:4px;margin-top:10px}#mtabs button{flex:1;margin:0;padding:7px 2px;font-size:11px;min-height:0;box-shadow:2px 2px 0 #000}#mtabs button.on{background:#ffd000;color:#070b2a}.ur small{display:block;font-size:10px;opacity:.75;font-weight:600}.ur .x{background:#ff3b5c;color:#fff}';
+  document.head.appendChild(st);
+  const w=document.createElement('div');w.id='mod';w.className='ov hide';w.style.zIndex=17;
+  w.innerHTML='<div class="card"><div class="logo small">🛡 MOD MENU</div>'+
+   '<div class="tag" style="font-size:12px">Needed for ban / delete: your Firebase database secret (kept in memory only, never saved).</div>'+
+   '<input class="inp" id="msec" type="password" placeholder="Firebase database secret" autocomplete="off">'+
+   '<div id="mtabs"><button data-t="levels" class="on">Levels</button><button data-t="users">Players</button><button data-t="banned">Banned</button></div>'+
+   '<input class="inp" id="mq" maxlength="20" placeholder="Search" autocomplete="off" autocapitalize="off" spellcheck="false">'+
+   '<div id="mmsg"></div><div id="mlist"></div>'+
+   '<button class="bk" id="mback">◀ Back</button></div>';
+  document.body.appendChild(w);
+  const b=document.createElement('button');b.id='bmod';b.className='pri hide';b.textContent='🛡 Mod menu';
+  b.style.cssText='background:#ff3b5c;color:#fff';
+  $('bback').before(b);
+
+  let tab='levels',rid=0,qT=0;
+  const msg=t=>{$('mmsg').textContent=t};
+  function arm(btn,label,fn){
+    let a=0;btn.textContent=label;
+    btn.onclick=async()=>{
+      if(!a){a=1;btn.textContent='Sure?';setTimeout(()=>{a=0;btn.textContent=label},3000);return}
+      btn.disabled=true;msg('Working…');
+      try{await fn();msg('Done ✔');tone(520,.08,'triangle',.12,1.3)}catch(e){msg(typeof e==='string'?e:'Something went wrong')}
+      render();
+    };
+    return btn;
+  }
+  function row(title,sub,btns){
+    const r=document.createElement('div');r.className='ur';
+    const t=document.createElement('b');t.textContent=title;
+    if(sub){const s=document.createElement('small');s.textContent=sub;t.appendChild(s)}
+    r.appendChild(t);btns.forEach(x=>r.appendChild(x));return r;
+  }
+  function mkBtn(cls){const x=document.createElement('button');if(cls)x.className=cls;return x}
+  async function render(){
+    const id=++rid,L=$('mlist'),q=ukey($('mq').value.trim());
+    L.textContent='Loading…';
+    const bans=await loadBans(true);if(id!==rid)return;
+    const out=[];
+    try{
+      if(tab==='levels'){
+        const res=await _flRaw();if(id!==rid)return;
+        res.list.filter(l=>!q||l.name.toLowerCase().includes(q)||ukey(l.by).includes(q)).forEach(lv=>{
+          const k=ukey(lv.by),bn=bans.has(k),btns=[];
+          btns.push(arm(mkBtn('x'),'🗑 Delete',()=>delLevel(lv)));
+          if(VERIFY_OWNERS.indexOf(k)<0)btns.push(arm(mkBtn(),bn?'Unban':'🚫 Ban',()=>setBan(k,!bn,lv.uid)));
+          out.push(row(lv.name,'by '+lv.by+(bn?' · BANNED':'')+' · 🧱 '+lv.n,btns));
+        });
+        if(!out.length)msg(q?'No levels match.':'No levels.');
+      }else if(tab==='users'){
+        const all=(await allUsers()).filter(k=>!q||k.includes(q)).sort().slice(0,60);if(id!==rid)return;
+        all.forEach(k=>{
+          const bn=bans.has(k),btns=[];
+          if(VERIFY_OWNERS.indexOf(k)<0)btns.push(arm(mkBtn(bn?'':'x'),bn?'Unban':'🚫 Ban',()=>setBan(k,!bn)));
+          out.push(row('👤 '+k,bn?'BANNED':(VERIFY_OWNERS.indexOf(k)>=0?'owner':''),btns));
+        });
+        if(!out.length)msg('No players found.');
+      }else{
+        [...bans].filter(k=>!q||k.includes(q)).sort().forEach(k=>out.push(row('🚫 '+k,'',[arm(mkBtn(),'Unban',()=>setBan(k,false))])));
+        if(!out.length)msg('Nobody is banned.');
+      }
+    }catch(e){L.textContent='Could not reach the server.';return}
+    L.textContent='';out.forEach(x=>L.appendChild(x));
+  }
+  function open(){
+    hideOv('bt');$('mod').classList.remove('hide');uiOpen=true;msg('');render();
+  }
+  b.onclick=()=>{audioInit();open()};
+  $('mback').onclick=()=>openBuildTab();
+  $('mq').addEventListener('input',()=>{clearTimeout(qT);qT=setTimeout(render,250)});
+  document.querySelectorAll('#mtabs button').forEach(x=>x.onclick=()=>{
+    tab=x.dataset.t;document.querySelectorAll('#mtabs button').forEach(y=>y.classList.toggle('on',y===x));msg('');render();
+  });
+  const _obt=openBuildTab;
+  openBuildTab=function(){
+    $('mod').classList.add('hide');_obt();
+    const own=!!sess&&VERIFY_OWNERS.indexOf(ukey(sess))>=0;
+    $('bmod').classList.toggle('hide',!own);
+    if(sess)isBanned(sess).then(bn=>{
+      if(!bn)return;
+      logout();
+      const t=document.createElement('div');t.textContent='🚫 This account has been banned';
+      t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#ff3b5c;color:#fff;padding:10px 16px;border:3px solid #000;box-shadow:4px 4px 0 #000;font:bold 15px sans-serif;z-index:99;border-radius:8px';
+      document.body.appendChild(t);setTimeout(()=>t.remove(),3500);
+    });
+  };
+})();
+
 </script></body></html>
