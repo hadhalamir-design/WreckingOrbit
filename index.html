@@ -4481,5 +4481,65 @@ if (document.getElementById("lbpreview")) loadGlobalBoard();
   bp.addEventListener('pointerdown',e=>{if(e.target===bp)closeBp()});
   addEventListener('keydown',e=>{if(e.code==='Escape'&&!bp.classList.contains('hide')){e.preventDefault();closeBp()}},true);
 })();
+
+/* ===== FREEZE FIXES (robustness patch) ===== */
+(function(){
+  const $$=id=>document.getElementById(id);
+
+  // 1) One thrown error inside a frame used to stop rendering/scoring forever (looks like a freeze).
+  //    Now the frame is guarded, the scene is still drawn, and stuck effects are cleared if errors repeat.
+  const rawRender=THREE.WebGLRenderer.prototype.render;
+  const _fo=frame;let consec=0,logged=0;
+  frame=function(now){
+    try{_fo(now);consec=0}
+    catch(e){
+      consec++;if(logged++<5)console.error('Frame error (recovered):',e);
+      try{rawRender.call(renderer,scene,cam)}catch(e2){}
+      if(consec===60){
+        try{if(bossCut>0)endBossCut()}catch(x){}
+        hitStop=0;slowT=0;stunT=0;fovKick=0;
+      }
+    }
+  };
+
+  // 2) Result screen: if anything throws while building it, the game used to sit on "TOWER DOWN!" forever.
+  const _sr=showResult;
+  showResult=function(win){
+    try{_sr(win)}
+    catch(e){
+      console.error('showResult error (recovered):',e);
+      try{$$('banner').style.opacity=0;showOv('res')}catch(x){}
+    }
+  };
+
+  // 3) Stuck touch/mouse input: a lost pointerup left `pid` set and every later drag was ignored.
+  cv.addEventListener('pointerdown',()=>{ptr=null;pid=null},true);
+  addEventListener('pointermove',e=>{if(pid!==null&&e.pointerId===pid&&e.pointerType==='mouse'&&e.buttons===0){ptr=null;pid=null}},true);
+  const rel=e=>{if(!e.touches||!e.touches.length){ptr=null;pid=null}};
+  addEventListener('touchend',rel,{passive:true});addEventListener('touchcancel',rel,{passive:true});
+  document.addEventListener('visibilitychange',()=>{ptr=null;pid=null});
+
+  // 4) The game auto-pauses when the tab/app loses focus (notification, alt-tab) and stayed paused: resume automatically.
+  let autoP=false;
+  window.addEventListener('visibilitychange',()=>{
+    if(document.hidden)autoP=!paused&&!uiOpen;
+    else if(autoP){autoP=false;if(paused)$$('pz').click()}
+  },true);
+
+  // 5) Music schedulers: after a throttled/background tab they tried to schedule thousands of notes at once.
+  const _bf=bfTick;bfTick=function(){if(AC&&BM.fight&&BM.next<AC.currentTime-.3)BM.next=AC.currentTime+.05;_bf()};
+  const _mt=mTick;mTick=function(){if(AC&&MUS.on&&MUS.next<AC.currentTime-.3)MUS.next=AC.currentTime+.05;_mt()};
+
+  // 6) Watchdogs
+  const OV=['menu','res','bt','bld','auth','soc','chat','adm','perk','leaderboard','cov','modeov','cbov','mod','tutov','bpov'];
+  const anyOpen=()=>OV.some(i=>{const e=$$(i);return e&&!e.classList.contains('hide')});
+  let stuckUi=0,stuckEnd=0;
+  setInterval(()=>{
+    // uiOpen stuck on with no screen open = controls dead
+    if(uiOpen&&!advOn&&!(bossCut>0)&&!anyOpen()){if(++stuckUi>=3){stuckUi=0;uiOpen=false;try{musicSync()}catch(e){}}}else stuckUi=0;
+    // level ended but the result screen never appeared
+    if((clearing||failed)&&!anyOpen()&&!(bossCut>0)){if(++stuckEnd>=30){stuckEnd=0;showResult(clearing&&!failed)}}else stuckEnd=0;
+  },500);
+})();
 </script>
 </body></html>
