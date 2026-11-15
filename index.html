@@ -2291,7 +2291,7 @@ function cleanLv(o,id){
   a.forEach((v,k)=>{if(!v){p[k]=0;s[k]=0}});
   const iv=(x,lo,hi,d)=>{x=parseInt(x);return isNaN(x)?d:Math.max(lo,Math.min(hi,x))};
   return{id:String(id||''),name:cleanTxt(o.name,'Untitled',20),by:cleanTxt(o.by,'Player',16),t:+o.t||0,a,n,p,s,th:iv(o.th,0,MAPS.length-1,0),dc:iv(o.dc,0,SCEN.length-1,0),df:iv(o.df,0,2,1),sk:iv(o.sk,0,3,0),gv:iv(o.gv,0,2,0),wx:iv(o.wx,0,4,0),nd:iv(o.nd,0,2,1),tm:iv(o.tm,0,5,0),mt:iv(o.mt,0,2,0),
-    fr:iv(o.fr,0,2,0),bo:iv(o.bo,0,2,0),wd:iv(o.wd,0,2,0),gd:iv(o.gd,0,1,0),fg:iv(o.fg,0,2,0),bm:iv(o.bm,0,2,0),rl:decR(o.rl),uid:cleanTxt(o.uid,'',40),an:(decArr(o.an,9)||new Array(GN*GN).fill(0)).map((v,k)=>a[k]?v:0),asp:iv(o.asp,0,2,1),adi:iv(o.adi,0,2,1),gm:iv(o.gm,0,1,0),cs:iv(o.cs,0,3,1),cl:iv(o.cl,0,2,1),cg:iv(o.cg,0,2,1)};
+    fr:iv(o.fr,0,2,0),bo:iv(o.bo,0,2,0),wd:iv(o.wd,0,2,0),gd:iv(o.gd,0,1,0),fg:iv(o.fg,0,2,0),bm:iv(o.bm,0,2,0),rl:decR(o.rl),uid:cleanTxt(o.uid,'',40),an:(decArr(o.an,9)||new Array(GN*GN).fill(0)).map((v,k)=>a[k]?v:0),asp:iv(o.asp,0,2,1),adi:iv(o.adi,0,2,1),gm:iv(o.gm,0,1,0),cs:iv(o.cs,0,3,1),cl:iv(o.cl,0,2,1),cg:iv(o.cg,0,2,1),cn:iv(o.cn,0,3,1)};
 }
 function cfgFrom(lv){
   const cells=[],df=lv.df==null?1:lv.df;
@@ -2304,7 +2304,7 @@ function cfgFrom(lv){
   });
   const tmo=[0,30,45,60,90,120][lv.tm|0]||0;
   return{name:lv.name,cells,mass:[.9,1.3,1.8][df],time:tmo||Math.max(45,Math.min(120,Math.round((20+cells.length)*[1.25,1,.85][df]))),need:[.5,.65,.8][lv.nd==null?1:lv.nd],th:lv.th||0,dc:lv.dc||0,sk:lv.sk||0,gv:lv.gv||0,wx:lv.wx||0,met:lv.mt===1||(lv.mt!==2&&df>=1),
-    fr:lv.fr|0,bo:lv.bo|0,wd:lv.wd|0,gd:lv.gd|0,fg:lv.fg|0,bm:lv.bm|0,rl:lv.rl||[],asp:lv.asp==null?1:lv.asp,adi:lv.adi==null?1:lv.adi,gm:lv.gm|0,cs:lv.cs==null?1:lv.cs,cl:lv.cl==null?1:lv.cl,cg:lv.cg==null?1:lv.cg};
+    fr:lv.fr|0,bo:lv.bo|0,wd:lv.wd|0,gd:lv.gd|0,fg:lv.fg|0,bm:lv.bm|0,rl:lv.rl||[],asp:lv.asp==null?1:lv.asp,adi:lv.adi==null?1:lv.adi,gm:lv.gm|0,cs:lv.cs==null?1:lv.cs,cl:lv.cl==null?1:lv.cl,cg:lv.cg==null?1:lv.cg,cn:lv.cn==null?1:lv.cn};
 }
 function curLv(){return{name:cleanTxt($('ename').value,'Untitled',20),by:cleanTxt(sess,'Player',16),t:Date.now(),a:edH.slice(),n:edCount(),p:edP.slice(),s:edS.slice(),th:edTheme,dc:edDec,df:edDf,sk:edSky,gv:edGv,wx:edWx,nd:edNd,tm:edTm,mt:edMt,fr:edFr,bo:edBo,wd:edWd,gd:edGd,fg:edFg,bm:edBm,rl:edRules.map(r=>r.slice()),an:edA.map((v,k)=>edH[k]?v:0),asp:edAnSp,adi:edAnAm}}
 async function publishLevel(){
@@ -2312,7 +2312,7 @@ async function publishLevel(){
   if(n<6&&!edGm){setEdMsg('Build at least 6 blocks first');return}
   if(Date.now()-(parseInt(lsGet('wo_pubt','0'))||0)<20000){setEdMsg('Wait a few seconds before publishing again');return}
   if(!sess){openAuth();return}const lv=curLv();
-  const rec={name:lv.name,by:lv.by,h:encH(lv.a),p:encH(lv.p),s:encH(lv.s),th:lv.th,dc:lv.dc,df:lv.df,sk:lv.sk,gv:lv.gv,wx:lv.wx,nd:lv.nd,tm:lv.tm,mt:lv.mt,fr:lv.fr,bo:lv.bo,wd:lv.wd,gd:lv.gd,fg:lv.fg,bm:lv.bm,rl:encR(lv.rl),uid:xUid(),an:encH(lv.an),asp:lv.asp,adi:lv.adi,gm:lv.gm|0,cs:lv.cs,cl:lv.cl,cg:lv.cg,t:lv.t},btn=$('epub');
+  const rec={name:lv.name,by:lv.by,h:encH(lv.a),p:encH(lv.p),s:encH(lv.s),th:lv.th,dc:lv.dc,df:lv.df,sk:lv.sk,gv:lv.gv,wx:lv.wx,nd:lv.nd,tm:lv.tm,mt:lv.mt,fr:lv.fr,bo:lv.bo,wd:lv.wd,gd:lv.gd,fg:lv.fg,bm:lv.bm,rl:encR(lv.rl),uid:xUid(),an:encH(lv.an),asp:lv.asp,adi:lv.adi,gm:lv.gm|0,cs:lv.cs,cl:lv.cl,cg:lv.cg,cn:lv.cn,t:lv.t},btn=$('epub');
   btn.disabled=true;setEdMsg('Publishing…');
   try{
     if(CLOUD){const r=await fetch(CLOUD+'/levels.json',{method:'POST',body:JSON.stringify(rec)});if(!r.ok)throw 0}
@@ -2883,6 +2883,7 @@ setInterval(()=>{
 
 // ================= CUBE RUSH MODE =================
 const CUBE={on:false,list:[],hits:0,streak:0,spawnT:1.2,dead:false,last:performance.now(),best:parseInt(lsGet('wo_cbest','0'))||0};
+const DUEL={on:false,hum2:false,opp:parseInt(lsGet('wo_dopp','0'))===1?1:0,diff:Math.max(0,Math.min(3,parseInt(lsGet('wo_ddiff','1'))||0)),len:[20,40,60].indexOf(parseInt(lsGet('wo_dlen','40')))>=0?parseInt(lsGet('wo_dlen','40')):40,song:Math.max(0,Math.min(7,parseInt(lsGet('wo_dsong','7'))||0)),s:[0,0,0],saved:null,over:false,sd:false,t:0};
 const cubeGeo=new THREE.BoxGeometry(1.2,1.2,1.2);
 const cubeMat=new THREE.MeshStandardMaterial({color:0xff3b5c,emissive:0xff1040,emissiveIntensity:.6,roughness:.4});
 const cubeEdge=new THREE.LineBasicMaterial({color:0xffffff});
@@ -2942,11 +2943,12 @@ setInterval(()=>{
   cmSyncAudio(dt);
   if(!CUBE.on||CUBE.dead||uiOpen||paused||!started)return;
   cmSpawnTick();
+  if(DUEL.on){duelTick(dt);cmPulse();return}
   for(let i=CUBE.list.length-1;i>=0;i--){
     const c=CUBE.list[i];if(c.tA!=null)c.x=CM_XC-(c.tA-cmNow())*c.sp;else c.x+=c.sp*dt;
     c.m.position.set(c.x,c.y,c.z);c.m.rotation.x+=dt*3;c.m.rotation.z+=dt*2;
     const dx=c.x-ball.position.x,dy=c.y-ball.position.y,dz=c.z-ball.position.z;
-    if(Math.hypot(dx,dy*.6,dz)<3.4){cubeHit(i);continue}
+    if(Math.abs(dz)<=1.2&&Math.hypot(dx,dy*.6,dz)<3.4){cubeHit(i);continue}   // must be IN the cube's lane; between lanes hits nothing
     if(c.x>=10.5){cubeMiss(c);return}
   }
   cmPulse();
@@ -3002,9 +3004,9 @@ build=function(q){
     scene.add(cLane);
   }
 };
-cv.addEventListener('pointerdown',e=>{if(!CUBE.on)return;cBX=cTx;cBZ=cTz;cP0={x:e.clientX,y:e.clientY}});
+cv.addEventListener('pointerdown',e=>{if(!CUBE.on||DUEL.on)return;cBX=cTx;cBZ=cTz;cP0={x:e.clientX,y:e.clientY}});
 addEventListener('pointermove',e=>{
-  if(!CUBE.on||!cP0||!ptr||e.pointerId!==pid)return;
+  if(!CUBE.on||DUEL.on||!cP0||!ptr||e.pointerId!==pid)return;
   const S=1.5*66*Math.tan(baseFov*Math.PI/360)/innerHeight;
   cTz=cClamp(cBZ-(e.clientX-cP0.x)*S);   // screen right = -z
   cTx=cClamp(cBX+(e.clientY-cP0.y)*S);   // screen down = toward camera
@@ -3021,10 +3023,10 @@ substep=function(){
   if(!CUBE.on||advOn){ropeSet(false);return _subOrbit()}
   ropeSet(true);
   const ks=12*h;
-  if(keys.KeyW||keys.ArrowUp)cTx=cClamp(cTx-ks);
-  if(keys.KeyS||keys.ArrowDown)cTx=cClamp(cTx+ks);
-  if(keys.KeyA||keys.ArrowLeft)cTz=cClamp(cTz+ks);
-  if(keys.KeyD||keys.ArrowRight)cTz=cClamp(cTz-ks);
+  if(keys.KeyW||(keys.ArrowUp&&!DUEL.hum2))cTx=cClamp(cTx-ks);
+  if(keys.KeyS||(keys.ArrowDown&&!DUEL.hum2))cTx=cClamp(cTx+ks);
+  if(keys.KeyA||(keys.ArrowLeft&&!DUEL.hum2))cTz=cClamp(cTz+ks);
+  if(keys.KeyD||(keys.ArrowRight&&!DUEL.hum2))cTz=cClamp(cTz-ks);
   const f=Math.min(1,h*20);
   cX+=(cTx-cX)*f;cZ+=(cTz-cZ)*f;
   angle=Math.atan2(cZ,cX);r=Math.max(2,Math.min(8.5,Math.hypot(cX,cZ)));rT=r;av=tav=0;
@@ -3502,7 +3504,7 @@ edTemplate=function(k){
 
 // ================= CUBE RUSH IN BUILD =================
 const CUBEOPT={sp:1,gold:.14};
-let CUBELV=null,edGm=0,edCs=1,edCl=1,edCg=1;
+let CUBELV=null,edGm=0,edCs=1,edCl=1,edCg=1,edCn=1;
 const _sCb=startCube;
 startCube=function(){CUBELV=null;CUBEOPT.sp=1;CUBEOPT.gold=.14;CUBE_LANES.length=0;[-6,-3,0,3,6].forEach(z=>CUBE_LANES.push(z));_sCb()};
 function startCubeLv(lv,from){
@@ -3518,7 +3520,7 @@ function startCubeLv(lv,from){
 const _pcu=playCustom;
 playCustom=function(lv,from){CUBELV=null;if(lv&&lv.gm===1){startCubeLv(lv,from);return}_pcu(lv,from)};
 const _cLv=curLv;
-curLv=function(){const o=_cLv();o.gm=edGm;o.cs=edCs;o.cl=edCl;o.cg=edCg;if(edGm&&o.n<1){o.a[24]=1;o.n=1}return o};
+curLv=function(){const o=_cLv();o.gm=edGm;o.cs=edCs;o.cl=edCl;o.cg=edCg;o.cn=edCn;if(edGm&&o.n<1){o.a[24]=1;o.n=1}return o};
 $('cbretry').onclick=()=>{audioInit();$('cbov').classList.add('hide');CUBELV?startCubeLv(CUBELV.lv,CUBELV.from):startCube()};
 $('cbmenu').onclick=()=>{
   $('cbov').classList.add('hide');const L=CUBELV;CUBELV=null;customCfg=null;endl=null;resetPerks();applyUps();
@@ -3529,7 +3531,7 @@ $('cbmenu').onclick=()=>{
 };
 (function(){
   const g=$('egrid'),mk=(t,id)=>{const a=document.createElement('div');a.className='sm sec';a.style.marginTop='12px';a.textContent=t;const c=document.createElement('div');c.id=id;c.className='chips';g.before(a);g.before(c)};
-  mk('🎮 Game mode','egm');mk('🧊 Cube speed','ecs');mk('🧊 Lanes','ecl');mk('🧊 Gold cubes','ecg');
+  mk('🎮 Game mode','egm');mk('🧊 Cube speed','ecs');mk('🧊 Lanes','ecl');mk('🧊 Gold cubes','ecg');mk('🧊 Length','ecn');
 })();
 const _cBE=buildEdOpts;
 buildEdOpts=function(){
@@ -3538,7 +3540,8 @@ buildEdOpts=function(){
   chipRow('ecs',['🐢 Slow','Normal','🐇 Fast','⚡ Insane'],()=>edCs,i=>edCs=i);
   chipRow('ecl',['3 lanes','5 lanes','7 lanes'],()=>edCl,i=>edCl=i);
   chipRow('ecg',['No gold','Some gold','Lots of gold'],()=>edCg,i=>edCg=i);
-  ['ecs','ecl','ecg'].forEach(id=>{const e=$(id);e.classList.toggle('hide',!edGm);if(e.previousElementSibling)e.previousElementSibling.classList.toggle('hide',!edGm)});
+  chipRow('ecn',['Short · 20','Medium · 40','Long · 80','Marathon · 150'],()=>edCn,i=>edCn=i);
+  ['ecs','ecl','ecg','ecn'].forEach(id=>{const e=$(id);e.classList.toggle('hide',!edGm);if(e.previousElementSibling)e.previousElementSibling.classList.toggle('hide',!edGm)});
 };
 
 // ================= CINEMA FRAMES =================
@@ -4768,7 +4771,7 @@ if (document.getElementById("lbpreview")) loadGlobalBoard();
   const _mt=mTick;mTick=function(){if(AC&&MUS.on&&MUS.next<AC.currentTime-.3)MUS.next=AC.currentTime+.05;_mt()};
 
   // 6) Watchdogs
-  const OV=['menu','res','bt','bld','auth','soc','chat','adm','perk','leaderboard','cov','modeov','cbov','mod','tutov','bpov'];
+  const OV=['menu','res','bt','bld','auth','soc','chat','adm','perk','leaderboard','cov','modeov','cbov','mod','tutov','bpov','clvsel','clvwin','duelsetup','duelend','cbsetup','onlsetup'];
   const anyOpen=()=>OV.some(i=>{const e=$$(i);return e&&!e.classList.contains('hide')});
   let stuckUi=0,stuckEnd=0;
   setInterval(()=>{
@@ -4777,6 +4780,822 @@ if (document.getElementById("lbpreview")) loadGlobalBoard();
     // level ended but the result screen never appeared
     if((clearing||failed)&&!anyOpen()&&!(bossCut>0)){if(++stuckEnd>=30){stuckEnd=0;showResult(clearing&&!failed)}}else stuckEnd=0;
   },500);
+})();
+</script>
+<script>
+// ================= CUBE RUSH: FINITE LEVELS + 1v1 DUEL =================
+(function(){
+// ---------- level data ----------
+const CNS=[20,40,80,150];
+const LANE_SETS=[[-3,0,3],[-6,-3,0,3,6],[-9,-6,-3,0,3,6,9]];
+const SPEEDS=[.65,1,1.4,1.9],GOLDS=[0,.14,.35];
+// n=name s=song c=cubes sp=speed l=lanes g=gold a/b=density at start/end of the level (0-3)
+const CLV=[
+ {n:'Warm Up',s:0,c:20,sp:0,l:0,g:0,a:0,b:0},
+ {n:'First Steps',s:1,c:25,sp:0,l:0,g:1,a:0,b:1},
+ {n:'Five Lanes',s:4,c:30,sp:1,l:1,g:1,a:0,b:1},
+ {n:'Midnight Run',s:5,c:35,sp:1,l:1,g:1,a:0,b:1},
+ {n:'Cyber Drift',s:3,c:40,sp:1,l:1,g:1,a:1,b:1},
+ {n:'Neon Sprint',s:0,c:40,sp:1,l:1,g:2,a:1,b:2},
+ {n:'Void Runner',s:2,c:45,sp:1,l:1,g:1,a:1,b:2},
+ {n:'Wide Open',s:3,c:45,sp:1,l:2,g:1,a:1,b:2},
+ {n:'Pixel Storm',s:1,c:50,sp:2,l:1,g:1,a:1,b:2},
+ {n:'Laser Storm',s:6,c:50,sp:2,l:1,g:1,a:2,b:2},
+ {n:'Speed Demon',s:4,c:55,sp:2,l:2,g:1,a:2,b:3},
+ {n:'Void Rush',s:2,c:60,sp:2,l:2,g:2,a:2,b:3},
+ {n:'Overdrive',s:6,c:60,sp:2,l:1,g:1,a:2,b:3},
+ {n:'Final Approach',s:0,c:70,sp:2,l:2,g:1,a:3,b:3},
+ {n:'👑 Final Boss',s:6,c:80,sp:3,l:2,g:2,a:2,b:3}
+];
+let clvCur=-1;
+let CLS;try{CLS=JSON.parse(lsGet('wo_clv','{}'))||{}}catch(e){CLS={}}
+if(!Array.isArray(CLS.st))CLS.st=[];if(!Array.isArray(CLS.bs))CLS.bs=[];
+const clvSave=()=>lsSet('wo_clv',JSON.stringify(CLS));
+const clvUnlocked=i=>i<=0||(CLS.st[i-1]|0)>0;
+const hideIds=ids=>ids.forEach(id=>{const e=$(id);if(e)e.classList.add('hide')});
+const ALLOV=['clvsel','clvwin','cbov','cbsetup','duelsetup','duelend','onlsetup'];
+const dcl=(v,a,b)=>Math.max(a,Math.min(b,v));
+const INFO=['5 hearts · fewer cubes, they arrive slower · score x0.75','3 hearts · the standard Cube Rush · score x1','2 hearts · busier waves from the start · score x1.5','1 heart · fast, packed with cubes · score x2'];
+
+// ---------- styles ----------
+(function(){
+  const st=document.createElement('style');
+  st.textContent=
+  '.cbtabs{display:flex;gap:6px;margin:12px 0 4px}.cbtab{flex:1;padding:11px 4px;font-size:12px;font-weight:900;text-transform:none;letter-spacing:0;border:2px solid #b44bff;background:#101744}.cbtab.on{background:#ffd000;color:#000;border-color:#000}'+
+  '#clvgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:42vh;overflow-y:auto;padding:4px 4px 8px 2px;margin-top:8px}'+
+  '.clvb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;min-width:0;text-transform:none;letter-spacing:0;border:2px solid #ff3b5c;line-height:1.15}'+
+  '.clvb b{font-size:22px;color:#ffd000}.clvb span{font-size:11px;font-weight:900}.clvb small{font-size:9px;opacity:.85;font-weight:600}'+
+  '.clvb em{font-style:normal;font-size:14px;color:#ffd000;letter-spacing:2px}.clvb.lock{opacity:.45;border-color:#555}.clvb.next{background:#34102a;animation:rdy .6s infinite alternate}'+
+  '#cbprog{position:fixed;top:calc(env(safe-area-inset-top,0px) + 112px);left:50%;transform:translateX(-50%);width:min(52vw,260px);height:16px;border:2px solid #000;border-radius:8px;background:rgba(7,11,42,.85);z-index:6;display:none;pointer-events:none;overflow:hidden}'+
+  '#cbprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff3b5c,#ffd000);transition:width .15s}'+
+  '#cbprog span{position:absolute;left:0;right:0;top:0;text-align:center;font-size:11px;line-height:12px;font-weight:900;text-shadow:0 1px 0 #000}'+
+  '#duelhud{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:6;display:none;justify-content:center;align-items:stretch;gap:8px;pointer-events:none;padding:0 10px}'+
+  '.dchip{min-width:86px;padding:8px 12px;border-radius:4px;background:#070b2a;border:2px solid;box-shadow:4px 4px 0 #000;text-align:center}'+
+  '.dchip .sm{font-size:10px}.dchip b{display:block;font-size:36px;line-height:1.05;font-variant-numeric:tabular-nums}'+
+  '#dmid{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 4px;font-weight:900;font-size:11px;letter-spacing:.1em;text-shadow:0 2px 0 #000}'+
+  '#dmid b{font-size:24px;color:#ffd000}'+
+  '#dquit{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);z-index:6;display:none;font-size:11px;padding:6px 12px;opacity:.8}'+
+  'body.duelmode #hud,body.duelmode #smash,body.duelmode #ult,body.duelmode #ab1,body.duelmode #ab2,body.duelmode #ab3{display:none!important}'+
+  'body.duelmode #dquit{display:block}'+
+  '#dssong{width:100%;padding:10px;background:#101744;color:#fff;border:2px solid #00e5ff;border-radius:4px;font:inherit;font-size:13px;font-weight:800}';
+  document.head.appendChild(st);
+})();
+
+// ---------- overlays ----------
+(function(){
+  const bs='display:block;width:100%;margin:8px 0 0;font-size:15px;padding:12px';
+  const w=document.createElement('div');
+  w.innerHTML=
+   '<div id="clvsel" class="ov hide" style="z-index:40"><div class="card" style="max-width:460px"><div class="logo small">🧊 CUBE RUSH</div><div class="cbtabs"><button type="button" class="cbtab on" data-t="lv">🧊 Levels</button><button type="button" class="cbtab" data-t="on">⚔️ 1v1 Duel</button><button type="button" class="cbtab" data-t="du">👥 2 Player (PC only)</button></div>'+
+   '<div class="tag" id="clvtot" style="margin:6px 0 0;font-size:12px"></div><div id="clvgrid"></div>'+
+   '<div class="sm sec" style="margin-top:8px">Difficulty</div><div id="clvdiff" style="display:flex;gap:6px"></div><div class="tag" id="clvdinfo" style="margin-top:6px;font-size:11px"></div>'+
+   '<button class="bk" id="clvback" style="'+bs+'">◀ Back</button></div></div>'+
+
+   '<div id="clvwin" class="ov hide" style="z-index:30"><div class="card"><div class="logo small">🎉 LEVEL COMPLETE</div>'+
+   '<div id="cwname" class="tag" style="margin:8px 0 0"></div><div id="cwstars" style="font-size:46px;letter-spacing:6px;color:#ffd000;margin:6px 0 2px"></div>'+
+   '<div class="tag" id="cwinfo" style="margin:8px 0"></div>'+
+   '<button class="pri" id="cwnext" style="'+bs+'">Next Level ▶</button><button class="bk" id="cwretry" style="'+bs+'">Retry ↻</button>'+
+   '<button class="bk" id="cwlv" style="'+bs+'">🧊 Levels</button></div></div>'+
+
+   '<div id="duelsetup" class="ov hide" style="z-index:40"><div class="card" style="max-width:460px"><div class="logo small">🧊 CUBE RUSH</div><div class="cbtabs"><button type="button" class="cbtab" data-t="lv">🧊 Levels</button><button type="button" class="cbtab" data-t="on">⚔️ 1v1 Duel</button><button type="button" class="cbtab on" data-t="du">👥 2 Player (PC only)</button></div>'+
+   '<div class="tag" style="margin:8px 0 0;font-size:12px">Two players on one PC chase the same cubes. The first ball to touch a cube claims it · ⭐ gold = 3 points. Most points wins!</div>'+
+   '<div class="sm sec" style="margin-top:8px">Opponent</div><div id="dsopp" style="display:flex;gap:6px"></div>'+
+   '<div id="dsdw"><div class="sm sec" style="margin-top:8px">Bot level</div><div id="dsdiff" style="display:flex;gap:6px"></div></div>'+
+   '<div class="sm sec" style="margin-top:8px">Match length</div><div id="dslen" style="display:flex;gap:6px"></div>'+
+   '<div class="sm sec" style="margin-top:8px">Song</div><select id="dssong"></select>'+
+   '<div class="tag" id="dsinfo" style="margin-top:8px;font-size:11px"></div>'+
+   '<button class="pri" id="dsgo" style="'+bs+'">Start ▶</button><button class="bk" id="dsback" style="'+bs+'">◀ Back</button></div></div>'+
+
+   '<div id="onlsetup" class="ov hide" style="z-index:40"><div class="card" style="max-width:460px"><div class="logo small">🧊 CUBE RUSH</div><div class="cbtabs"><button type="button" class="cbtab" data-t="lv">🧊 Levels</button><button type="button" class="cbtab on" data-t="on">⚔️ 1v1 Duel</button><button type="button" class="cbtab" data-t="du">👥 2 Player (PC only)</button></div>'+
+   '<div id="onmain"><div class="tag" style="margin:8px 0 0;font-size:12px">Race a friend online: you both chase the same cubes and the first ball to touch one claims it. Gold = 3 points.</div>'+
+   '<div class="sm sec" style="margin-top:8px">Match length</div><div id="onlen" style="display:flex;gap:6px"></div>'+
+   '<div class="sm sec" style="margin-top:8px">Song</div><select id="onsong" style="width:100%;padding:10px;background:#101744;color:#fff;border:2px solid #00e5ff;border-radius:4px;font:inherit;font-size:13px;font-weight:800"></select>'+
+   '<button class="pri" id="oncreate" style="'+bs+'">Create room</button>'+
+   '<div class="sm sec" style="margin-top:12px">Join a friend</div><div style="display:flex;gap:6px"><input id="oncode" maxlength="4" placeholder="CODE" autocomplete="off" style="flex:1;min-width:0;padding:10px;font:inherit;font-size:22px;font-weight:900;letter-spacing:8px;text-align:center;background:#101744;color:#fff;border:2px solid #00e5ff;border-radius:4px"><button id="onjoin" style="padding:10px 18px;font-size:15px">Join</button></div>'+
+   '<div class="sm sec" style="margin-top:14px">No friend around?</div><div id="ondiff" style="display:flex;gap:6px"></div>'+
+   '<button class="bk" id="onbot" style="'+bs+'">🤖 Practice vs Bot</button><div class="tag" id="onrec" style="margin-top:6px;font-size:11px"></div></div>'+
+   '<div id="onwait" class="hide"><div class="tag" id="onstat" style="margin:14px 0 4px"></div><div id="oncodeshow" style="font-size:60px;font-weight:900;letter-spacing:12px;color:#ffd000;margin:6px 0 10px"></div><button class="bk" id="oncancel" style="'+bs+'">Cancel</button></div>'+
+   '<div class="tag" id="onmsg" style="color:#ff9a9a;font-size:12px;min-height:16px"></div>'+
+   '<button class="bk" id="onback" style="'+bs+'">◀ Back</button></div></div>'+
+
+   '<div id="duelend" class="ov hide" style="z-index:30"><div class="card"><div class="logo small" id="dewin">🏆</div>'+
+   '<div id="descore" style="font-size:46px;font-weight:900;margin:12px 0 4px"></div><div class="tag" id="deinfo" style="margin:6px 0"></div>'+
+   '<button class="pri" id="derematch" style="'+bs+'">Rematch ↻</button><button class="bk" id="deset" style="'+bs+'">⚙ Settings</button>'+
+   '<button class="bk" id="demenu" style="'+bs+'">Menu</button></div></div>'+
+
+   '<div id="cbprog"><i></i><span></span></div>'+
+   '<div id="duelhud"><div class="dchip" id="dp1" style="border-color:#ff7a45"><div class="sm" style="color:#ff7a45">P1</div><b id="ds1">0</b></div>'+
+   '<div id="dmid">LEFT<b id="dleft">0</b>CUBES</div>'+
+   '<div class="dchip" id="dp2" style="border-color:#00e5ff"><div class="sm" style="color:#00e5ff" id="dp2n">Bot</div><b id="ds2">0</b></div></div>'+
+   '<button id="dquit">✖ Quit duel</button>';
+  while(w.firstChild)document.body.appendChild(w.firstChild);
+})();
+
+// ---------- finite level logic: spawn only the level's cubes, density ramps with progress ----------
+const _cmMake0=cmMake;
+cmMake=function(tA,z,gold){
+  if(CUBE.goal&&CUBE.spawned>=CUBE.goal)return;
+  CUBE.spawned++;_cmMake0(tA,z,gold);
+  if(NET.on){const c=CUBE.list[CUBE.list.length-1];if(c){c.id=CUBE.spawned;NET.gold[c.id]=!!c.gold}}
+};
+cmSpawnTick=function(){
+  if(!CM.on)return;
+  const now=cmNow(),span=CM.Tb*CM.spb,L=CUBE_LANES.length;
+  for(;;){
+    if(CUBE.goal&&CUBE.spawned>=CUBE.goal)break;
+    const i=CM.ev,tA=cmStepT(i);
+    if(tA-now>span)break;
+    CM.ev++;
+    const s=i&15,bar=i>>4,hh=NET.on?CUBE.spawned:CUBE.hits,prog=CUBE.goal?Math.min(1,CUBE.spawned/CUBE.goal):0;
+    const base=(CUBE.d0!=null)?Math.round(CUBE.d0+(CUBE.d1-CUBE.d0)*prog):(hh<8?0:hh<20?1:hh<40?2:3);
+    const lv=Math.max(0,Math.min(3,base+GDIFF[cDiff].cOff));
+    if(CMPAT[lv].indexOf(s)<0)continue;
+    let li=CM.lane;const gap=i-CM.lastEv;CM.lastEv=i;
+    if(gap>=2&&L>1&&RND()<(gap>=4?.85:.6)){
+      const st=(gap>=8&&RND()<.35)?2:1;let dir=RND()<.5?-1:1;
+      if(li+dir*st<0||li+dir*st>L-1)dir=-dir;
+      li=Math.max(0,Math.min(L-1,li+dir*st));
+    }
+    CM.lane=li;
+    const gold=hh>=3&&s===0&&(bar&3)===3&&RND()<Math.min(1,CUBEOPT.gold*3);
+    cmMake(tA,CUBE_LANES[li],gold);
+    if(lv>=2&&s%8===0&&RND()<.2&&L>1)cmMake(tA,CUBE_LANES[li+(li<L-1?1:-1)],false);
+  }
+};
+// count missed cubes (used for the level progress bar)
+const _cubeMiss1=cubeMiss;
+cubeMiss=function(c){if(DUEL.on)return;CUBE.miss=(CUBE.miss|0)+1;_cubeMiss1(c)};
+const _cubeHearts1=cubeHearts;
+cubeHearts=function(){_cubeHearts1();if(DUEL.on){const hh=document.getElementById('cbhearts');if(hh)hh.style.display='none'}};
+
+// every build resets the finite-level counters and sets up / tears down the duel
+const _buildL=build;
+function duelRestore(){if(DUEL.saved!=null){cDiff=DUEL.saved;DUEL.saved=null}}
+build=function(q){
+  const c=customCfg;
+  DUEL.on=!!(c&&c.from==='cube'&&c.duel);
+  if(!DUEL.on)duelRestore();
+  _buildL(q);
+  CUBE.spawned=0;CUBE.miss=0;CUBE.won=false;
+  if(CUBE.on&&c){CUBE.goal=c.goal||0;CUBE.d0=c.d0==null?null:c.d0;CUBE.d1=c.d1==null?null:c.d1}
+  else{CUBE.goal=0;CUBE.d0=null;CUBE.d1=null}
+  if(CM.on&&CUBE.on)cmStop();   // the song restarts together with the level
+  duelSetup();cbProg();
+};
+
+// ---------- progress bar ----------
+const pgEl=$('cbprog');
+function cbProg(){
+  const on=CUBE.on&&!DUEL.on&&CUBE.goal>0;
+  pgEl.style.display=on?'block':'none';
+  if(!on)return;
+  const done=Math.min(CUBE.goal,(CUBE.hits|0)+(CUBE.miss|0));
+  pgEl.firstChild.style.width=(done/CUBE.goal*100)+'%';
+  pgEl.lastChild.textContent=done+' / '+CUBE.goal+' cubes';
+  if(clvCur>=0&&!CUBELV){const t='🧊 Level '+(clvCur+1);if($('lvl').textContent!==t)$('lvl').textContent=t}
+}
+
+// ---------- LEVEL COMPLETE ----------
+function cubeWin(){
+  if(CUBE.won||CUBE.dead)return;
+  CUBE.won=true;CUBE.dead=true;
+  const stars=CUBE.lives>=CUBE.maxLives?3:(CUBE.lives*2>=CUBE.maxLives?2:1);
+  const camp=clvCur>=0&&!CUBELV;
+  let extra='';
+  if(camp){
+    const prev=CLS.st[clvCur]|0,first=prev===0,gain=Math.max(0,stars-prev);
+    if(stars>prev)CLS.st[clvCur]=stars;
+    if(score>(CLS.bs[clvCur]|0))CLS.bs[clvCur]=score;
+    clvSave();
+    const bonus=(first?20+clvCur*3:0)+gain*5;
+    if(bonus>0){addCoins(bonus);extra=' · +'+bonus+' 🪙'}
+    if(first&&clvCur+1<CLV.length)extra+=' · Level '+(clvCur+2)+' unlocked!';
+  }
+  const lost=CUBE.maxLives-CUBE.lives;
+  $('cwname').textContent=camp?('Level '+(clvCur+1)+' · '+CLV[clvCur].n):(customCfg&&customCfg.name||'Cube Rush');
+  $('cwstars').textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
+  $('cwinfo').textContent=GDIFF[cDiff].i+' '+GDIFF[cDiff].n+' · '+CUBE.hits+'/'+CUBE.goal+' cubes hit · '+(lost?lost+(lost===1?' heart':' hearts')+' lost':'no hearts lost')+' · Score '+score+extra;
+  const allDone=camp&&CLV.every((_,i)=>(CLS.st[i]|0)>0);
+  if(allDone&&clvCur===CLV.length-1)$('cwinfo').textContent+=' · 👑 You cleared every level!';
+  $('cwnext').style.display=(camp&&clvCur+1<CLV.length)?'block':'none';
+  $('cwlv').textContent=camp?'🧊 Levels':'Menu';
+  showBanner('🎉 LEVEL COMPLETE!',1500);flash();vib([40,30,40,30,80]);
+  [523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12,1),i*110));
+  for(let i=0;i<6;i++)burst({x:ball.position.x+(Math.random()-.5)*10,y:2+Math.random()*4,z:ball.position.z+(Math.random()-.5)*14},new THREE.Color().setHSL(Math.random(),1,.6),24,14);
+  setTimeout(()=>{if(!CUBE.won)return;$('clvwin').classList.remove('hide');uiOpen=true},1600);
+}
+
+// ---------- start a campaign level ----------
+function startCL(i){
+  const L=CLV[i];if(!L)return;
+  clvCur=i;CUBELV=null;
+  CM.sel=L.s;
+  CUBE_LANES.length=0;LANE_SETS[L.l].forEach(z=>CUBE_LANES.push(z));
+  CUBEOPT.sp=SPEEDS[L.sp];CUBEOPT.gold=GOLDS[L.g];
+  customCfg={name:L.n,cells:[[0,0,0,0,'norm']],mass:1,time:99999,need:1e9,th:mapIdx,dc:0,sk:0,gv:0,wx:0,met:false,from:'cube',goal:L.c,d0:L.a,d1:L.b};
+  endl=null;resetPerks();applyUps();pstreak=0;level=1;score=0;combo=0;clearing=false;angle=0;av=0;r=5;rT=5;
+  hideIds(ALLOV);$('modeov').classList.add('hide');hideOv('menu');hideOv('res');
+  build();resetChain();updHud();$('hint').style.opacity=.8;
+  showBanner('🧊 LEVEL '+(i+1)+' · '+L.n.toUpperCase(),2200);
+}
+// custom (editor) Cube Rush levels now have a length too
+startCubeLv=function(lv,from){
+  clvCur=-1;
+  const ln=LANE_SETS[lv.cl==null?1:lv.cl];
+  CUBE_LANES.length=0;ln.forEach(z=>CUBE_LANES.push(z));
+  CUBEOPT.sp=SPEEDS[lv.cs==null?1:lv.cs];CUBEOPT.gold=GOLDS[lv.cg==null?1:lv.cg];
+  customCfg={name:lv.name,cells:[[0,0,0,0,'norm']],mass:1,time:99999,need:1e9,th:lv.th||0,dc:lv.dc||0,sk:lv.sk||0,gv:lv.gv||0,wx:lv.wx||0,met:false,from:'cube',fr:lv.fr|0,bo:lv.bo|0,fg:lv.fg|0,gd:lv.gd|0,
+    goal:CNS[lv.cn==null?1:lv.cn]||40,d0:0,d1:2};
+  endl=null;resetPerks();applyUps();pstreak=0;level=1;score=0;combo=0;clearing=false;angle=0;av=0;r=5;rT=5;
+  hideOv('bt');hideOv('bld');hideOv('res');hideOv('menu');hideIds(ALLOV);$('modeov').classList.add('hide');
+  build();resetChain();updHud();$('hint').style.opacity=.8;
+  CUBELV={lv,from};
+};
+// the old endless entry point now just launches the next level to beat
+startCube=function(){
+  let i=0;while(i<CLV.length-1&&(CLS.st[i]|0)>0)i++;
+  startCL(i);
+};
+
+// ---------- leaving / retrying ----------
+function cubeExit(){
+  netClose();hideIds(ALLOV);
+  const L=CUBELV;CUBELV=null;clvCur=-1;customCfg=null;endl=null;resetPerks();applyUps();
+  build(1);resetChain();
+  if(L&&L.from==='test'){openEditor();return}
+  if(L&&L.from==='play'){openBuildTab();return}
+  buildLvls();showOv('menu');
+}
+function cubeRetry(){
+  hideIds(ALLOV);
+  if(customCfg&&customCfg.duel){startDuel();return}
+  if(CUBELV){startCubeLv(CUBELV.lv,CUBELV.from);return}
+  if(clvCur>=0){startCL(clvCur);return}
+  startCube();
+}
+$('cbretry').onclick=()=>{audioInit();cubeRetry()};
+$('cbmenu').onclick=()=>{audioInit();cubeExit()};
+$('cwretry').onclick=()=>{audioInit();cubeRetry()};
+$('cwnext').onclick=()=>{audioInit();hideIds(ALLOV);startCL(clvCur+1)};
+$('cwlv').onclick=()=>{audioInit();if(clvCur>=0&&!CUBELV){$('clvwin').classList.add('hide');clvOpen('play')}else cubeExit()};
+const _cubeOver1=cubeOver;
+cubeOver=function(){
+  _cubeOver1();
+  const camp=clvCur>=0&&!CUBELV&&!(customCfg&&customCfg.duel);
+  const ex=$('cbretry').nextElementSibling;
+  if(ex&&ex.id!=='cbmenu'){ex.textContent='🧊 Levels';ex.style.display=camp?'block':'none';ex.onclick=()=>{audioInit();$('cbov').classList.add('hide');clvOpen('play')}}
+  if(camp)$('cbs').textContent='Level '+(clvCur+1)+' · '+CLV[clvCur].n+' · '+GDIFF[cDiff].i+' '+GDIFF[cDiff].n+' · Cubes cleared: '+((CUBE.hits|0)+(CUBE.miss|0))+'/'+CUBE.goal+' · Score: '+score;
+  else if(CUBELV)$('cbs').textContent+=' · Cubes cleared: '+((CUBE.hits|0)+(CUBE.miss|0))+'/'+CUBE.goal;
+};
+
+// ---------- LEVEL SELECT ----------
+let clvCtx='mode';
+function clvRender(){
+  const g=$('clvgrid');g.innerHTML='';
+  let tot=0,nextI=-1;
+  CLV.forEach((L,i)=>{const st=CLS.st[i]|0;tot+=st;if(nextI<0&&st===0)nextI=i});
+  CLV.forEach((L,i)=>{
+    const open=clvUnlocked(i),st=CLS.st[i]|0;
+    const b=document.createElement('button');b.type='button';
+    b.className='clvb'+(open?'':' lock')+(i===nextI?' next':'');
+    b.innerHTML='<b>'+(i+1)+'</b><span>'+L.n+'</span><small>'+(open?('🎵 '+SONGS[L.s].n+'<br>'+L.c+' cubes'):'🔒 Clear level '+i)+'</small><em>'+(st?'★'.repeat(st)+'☆'.repeat(3-st):(open?'☆☆☆':''))+'</em>';
+    b.onclick=()=>{if(!open){tone(120,.15,'sawtooth',.1,.5);return}audioInit();startCL(i)};
+    g.appendChild(b);
+  });
+  $('clvtot').textContent='⭐ '+tot+' / '+(CLV.length*3)+' stars · clear a level to unlock the next';
+  const D=$('clvdiff');D.innerHTML='';
+  GDIFF.forEach((d,i)=>{
+    const b=document.createElement('button'),on=cDiff===i;b.type='button';b.textContent=d.i+' '+d.n;
+    b.style.cssText='flex:1;min-width:0;padding:10px 2px;font-size:12px;font-weight:900;text-transform:none;letter-spacing:0;border:2px solid '+d.col+';border-radius:4px;background:'+(on?d.col:'#101744')+';color:'+(on?'#000':'#fff');
+    b.onclick=()=>{audioInit();cDiff=i;lsSet('wo_cdiff',String(i));clvRender()};D.appendChild(b);
+  });
+  $('clvdinfo').textContent=INFO[cDiff];
+}
+function clvOpen(ctx){clvCtx=ctx;clvRender();$('duelsetup').classList.add('hide');$('onlsetup').classList.add('hide');$('clvsel').classList.remove('hide');uiOpen=true}
+$('clvback').onclick=()=>{$('clvsel').classList.add('hide');if(clvCtx==='play')cubeExit()};
+
+
+// ---------- mode chooser: Cube Rush -> level select, new Duel button ----------
+$('mdcube').onclick=()=>{audioInit();clvOpen('mode')};
+(function(){
+  const d=$('mdcube').querySelector('.d');if(d)d.textContent='15 music levels · hit every cube to clear them';
+  $('mdback').insertAdjacentHTML('beforebegin','<button id="mdduel" style="display:block;width:100%;margin:12px 0 0;padding:12px;font-size:15px;text-transform:none;border-color:#b44bff">⚔️ 1v1 CUBE DUEL<br><small style="font-weight:600">Race a friend or the Bot for every cube</small></button>');
+  $('mdduel').onclick=()=>{audioInit();dsOpen('mode')};
+})();
+
+// =====================================================================
+//                              1v1 DUEL
+// =====================================================================
+const P1C=0xff7a45,P2C=0x00e5ff;
+const dBall=new THREE.Mesh(new THREE.SphereGeometry(1,32,24),new THREE.MeshStandardMaterial({color:0x00c8ff,emissive:0x04506a,metalness:.5,roughness:.35}));
+dBall.castShadow=true;dBall.visible=false;scene.add(dBall);
+const dLight=new THREE.PointLight(P2C,0,14);scene.add(dLight);   // always in the scene (intensity 0) so toggling never recompiles shaders
+function mkRing(col){const m=new THREE.Mesh(new THREE.TorusGeometry(1.7,.09,8,48),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.85}));m.rotation.x=Math.PI/2;m.visible=false;scene.add(m);return m}
+const rg1=mkRing(P1C),rg2=mkRing(P2C);
+function mkTag(txt,col){
+  try{
+    const c=document.createElement('canvas');c.width=128;c.height=64;const x=c.getContext('2d');
+    x.fillStyle='rgba(7,11,42,.85)';x.fillRect(4,8,120,48);x.strokeStyle=col;x.lineWidth=5;x.strokeRect(4,8,120,48);
+    x.fillStyle=col;x.font='900 '+(txt.length>4?24:32)+'px monospace';x.textAlign='center';x.textBaseline='middle';x.fillText(txt,64,33);
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
+    s.scale.set(2.6,1.3,1);s.visible=false;scene.add(s);return s;
+  }catch(e){return null}
+}
+const tg1=mkTag('P1','#ff7a45'),tg2=mkTag('P2','#00e5ff'),tgb=mkTag('BOT','#00e5ff'),tgY=mkTag('YOU','#ff7a45'),tgF=mkTag('FRIEND','#00e5ff');
+const p2={x:5,z:-4.5,tx:5,tz:-4.5};
+const dp=new Map();   // active touches -> which player they steer
+
+function duelSetup(){
+  const on=DUEL.on;
+  document.body.classList.toggle('duelmode',on);
+  dBall.visible=rg1.visible=rg2.visible=on;
+  if(tg1){tg1.visible=on&&!DUEL.net;tg2.visible=on&&DUEL.hum2;tgb.visible=on&&!DUEL.hum2&&!DUEL.net;tgY.visible=on&&!!DUEL.net;tgF.visible=on&&!!DUEL.net}
+  dLight.intensity=on?1.2:0;
+  $('duelhud').style.display=on?'flex':'none';
+  if(!on)return;
+  const hc=document.getElementById('cbhearts');if(hc)hc.style.display='none';
+  DUEL.s=[0,0,0];DUEL.over=false;DUEL.sd=false;DUEL.t=0;dp.clear();
+  const sz=(DUEL.net&&NET.me==='g')?-4.5:4.5;
+  p2.x=p2.tx=5;p2.z=p2.tz=-sz;
+  cTx=cX=5;cTz=cZ=sz;cBX=5;cBZ=sz;
+  ball.position.set(5,1.2,sz);ball.velocity.set(0,0,0);
+  $('lvl').textContent='⚔️ Cube Duel';
+  $('hint').innerHTML=DUEL.hum2?'P1: drag the LEFT half of the screen or use W A S D<br>P2: drag the RIGHT half or use the arrow keys<br>First ball to touch a cube claims it!':'Drag anywhere (or use W A S D) to move<br>First ball to touch a cube claims it!';
+  $('dp2n').textContent=DUEL.net?'FRIEND':DUEL.hum2?'P2':'BOT';$('dp1').firstChild.textContent=(DUEL.hum2&&!DUEL.net)?'P1':'YOU';
+  duelPlace();duelHud();
+}
+function duelPlace(){
+  const bx=ball.position.x,bz=ball.position.z;
+  dBall.position.set(p2.x,1.2,p2.z);dLight.position.set(p2.x,2.5,p2.z);
+  rg1.position.set(bx,.15,bz);rg2.position.set(p2.x,.15,p2.z);
+  if(tg1){tg1.position.set(bx,3.6,bz);tg2.position.set(p2.x,3.6,p2.z);tgb.position.set(p2.x,3.6,p2.z);tgY.position.set(bx,3.6,bz);tgF.position.set(p2.x,3.6,p2.z)}
+}
+function duelHud(){
+  $('ds1').textContent=DUEL.s[1];$('ds2').textContent=DUEL.s[2];
+  $('dleft').textContent=Math.max(0,CUBE.goal-((CUBE.hits|0)+(CUBE.miss|0)));
+}
+
+// pointer steering: each finger steers the player whose half of the screen it started in
+cv.addEventListener('pointerdown',e=>{
+  if(!DUEL.on)return;
+  const pl=DUEL.hum2?(e.clientX<innerWidth/2?1:2):1;
+  dp.set(e.pointerId,{pl,x0:e.clientX,y0:e.clientY,bx:pl===1?cTx:p2.tx,bz:pl===1?cTz:p2.tz});
+});
+addEventListener('pointermove',e=>{
+  if(!DUEL.on)return;const d=dp.get(e.pointerId);if(!d)return;
+  const S=1.5*66*Math.tan(baseFov*Math.PI/360)/innerHeight;
+  const tz=dcl(d.bz-(e.clientX-d.x0)*S,-9,9),tx=dcl(d.bx+(e.clientY-d.y0)*S,1,9);
+  if(d.pl===1){cTz=tz;cTx=tx}else{p2.tz=tz;p2.tx=tx}
+});
+const dpUp=e=>dp.delete(e.pointerId);
+addEventListener('pointerup',dpUp);addEventListener('pointercancel',dpUp);
+
+// Bot opponent
+const AIP=[{v:9,see:.9,err:.30,jit:1.4,fx:4.6},{v:14,see:1.3,err:.14,jit:.8,fx:3.6},{v:21,see:1.8,err:.05,jit:.4,fx:2.4},{v:32,see:2.6,err:0,jit:.12,fx:1.3}];
+function aiStep(dt){
+  const P=AIP[DUEL.diff];let tgt=null,bt=1e9;
+  for(const c of CUBE.list){
+    const eta=(p2.x-c.x)/c.sp;                       // seconds until the cube crosses the Bot's row
+    if(eta>P.see||eta<-.3)continue;                   // not spotted yet / already gone
+    if(c.ai===undefined)c.ai=Math.random()<P.err?(Math.random()<.5?-1:1)*(3.6+Math.random()*2):0;   // sometimes it commits to the wrong lane
+    const need=Math.abs(c.z+c.ai-p2.z)/P.v,reach=need<=Math.max(0,eta)+.12;
+    const sc=eta+(reach?0:5);
+    if(sc<bt){bt=sc;tgt=c}
+  }
+  let wz=-4.5+Math.sin(DUEL.t*1.3)*2.5,wx=5+Math.sin(DUEL.t*.9)*1;
+  if(tgt){wz=tgt.z+tgt.ai+Math.sin(DUEL.t*7.3)*P.jit*.4;wx=P.fx}
+  const step=P.v*dt;
+  p2.tz+=Math.max(-step,Math.min(step,wz-p2.tz));
+  p2.tx+=Math.max(-step,Math.min(step,wx-p2.tx));
+}
+
+function duelTick(dt){
+  DUEL.t+=dt;
+  if(DUEL.net)netStep(dt);
+  else if(DUEL.hum2){
+    const ks=14*dt;
+    if(keys.ArrowUp)p2.tx-=ks;if(keys.ArrowDown)p2.tx+=ks;if(keys.ArrowLeft)p2.tz+=ks;if(keys.ArrowRight)p2.tz-=ks;
+  }else aiStep(dt);
+  p2.tx=dcl(p2.tx,1,9);p2.tz=dcl(p2.tz,-9,9);cTx=dcl(cTx,1,9);cTz=dcl(cTz,-9,9);
+  const f=Math.min(1,dt*(DUEL.net?9:20));p2.x+=(p2.tx-p2.x)*f;p2.z+=(p2.tz-p2.z)*f;
+  const bx=ball.position.x,bz=ball.position.z;
+  duelPlace();dBall.position.y=1.2+Math.sin(DUEL.t*6)*.06;dBall.rotation.x+=dt*4;
+  for(let i=CUBE.list.length-1;i>=0;i--){
+    const c=CUBE.list[i];
+    if(c.tA!=null)c.x=CM_XC-(c.tA-cmNow())*c.sp;else c.x+=c.sp*dt;
+    c.m.position.set(c.x,c.y,c.z);c.m.rotation.x+=dt*3;c.m.rotation.z+=dt*2;
+    const d1=Math.hypot(c.x-bx,(c.y-ball.position.y)*.6,c.z-bz),d2=Math.hypot(c.x-p2.x,(c.y-1.2)*.6,c.z-p2.z);
+    const in1=d1<3.4&&Math.abs(c.z-bz)<=1.2,in2=d2<3.4&&Math.abs(c.z-p2.z)<=1.2;   // must be IN the cube's lane
+    if(DUEL.net){if(in1)netClaim(i);else if(c.x>=10.5)netDrop(i);continue}
+    if(in1||in2){duelHit(i,in1&&(!in2||d1<=d2)?1:2);continue}
+    if(c.x>=10.5)duelDrop(i);
+  }
+  duelHud();
+}
+function duelHit(i,w){
+  const c=CUBE.list[i],gold=!!c.gold,pts=gold?3:1,at={x:c.x,y:c.y,z:c.z},col=new THREE.Color(w===1?P1C:P2C),hex=w===1?'#ff7a45':'#00e5ff';
+  scene.remove(c.m);CUBE.list.splice(i,1);
+  DUEL.s[w]+=pts;CUBE.hits=(CUBE.hits|0)+1;CUBE.streak=DUEL.s[1]+DUEL.s[2];
+  burst(at,col,16,10);shock(at,col,3);popup('+'+pts,hex,at,gold?36:26);
+  if(gold){burst(at,new THREE.Color(0xffd23f),24,14);flash();cmGold()}
+  shake=Math.min(1,shake+.15);cmHit();
+  if(w===1||DUEL.hum2)vib(12);
+}
+function duelDrop(i){
+  const c=CUBE.list[i];scene.remove(c.m);CUBE.list.splice(i,1);CUBE.miss=(CUBE.miss|0)+1;
+  popup('missed','#9aa4d6',{x:Math.min(c.x,9),y:c.y+1,z:c.z},16);tone(150,.1,'sine',.07,.6);
+}
+function duelRec(){let r0;try{r0=JSON.parse(lsGet('wo_drec','{}'))||{}}catch(e){r0={}}if(!Array.isArray(r0.w))r0.w=[0,0,0,0];if(!Array.isArray(r0.l))r0.l=[0,0,0,0];return r0}
+function duelFinish(){
+  if(DUEL.over)return;
+  if(DUEL.net){netFinish();return}
+  $('derematch').style.display='block';$('deset').textContent='⚙ Settings';
+  const a=DUEL.s[1],b=DUEL.s[2];
+  if(a===b){CUBE.goal+=3;DUEL.sd=true;showBanner('⚡ SUDDEN DEATH!',1800);tone(880,.2,'square',.12,1);return}
+  DUEL.over=true;CUBE.won=true;CUBE.dead=true;
+  const w=a>b?1:2,cpu=!DUEL.hum2;let title,info='';
+  if(cpu){
+    const rc=duelRec();w===1?rc.w[DUEL.diff]++:rc.l[DUEL.diff]++;lsSet('wo_drec',JSON.stringify(rc));
+    title=w===1?'🏆 YOU WIN!':'🤖 Bot WINS';
+    info='vs Bot '+GDIFF[DUEL.diff].i+' '+GDIFF[DUEL.diff].n+' · your record '+rc.w[DUEL.diff]+'W – '+rc.l[DUEL.diff]+'L';
+    if(w===1){const co=5*(DUEL.diff+1);addCoins(co);info+=' · +'+co+' 🪙'}
+  }else{title='🏆 PLAYER '+w+' WINS!';info='Local 2 players · '+(a+b)+' points claimed'}
+  if(DUEL.sd)info+=' · won in sudden death';
+  $('dewin').textContent=title;
+  $('descore').innerHTML='<span style="color:#ff7a45">'+a+'</span> – <span style="color:#00e5ff">'+b+'</span>';
+  $('deinfo').textContent=info;
+  showBanner(title,1500);flash();vib([40,30,40,30,80]);
+  if(!cpu||w===1)[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12,1),i*110));else{tone(220,.3,'sawtooth',.12,.5);setTimeout(()=>tone(165,.5,'sawtooth',.12,.5),250)}
+  setTimeout(()=>{if(!DUEL.over)return;$('duelend').classList.remove('hide');uiOpen=true},1600);
+}
+
+function startDuel(){
+  if(DUEL.saved==null)DUEL.saved=cDiff;
+  cDiff=DUEL.net?1:DUEL.diff;DUEL.hum2=!DUEL.net&&DUEL.opp===1;
+  CM.sel=DUEL.net?NET.meta.song:DUEL.song;CUBELV=null;clvCur=-1;
+  CUBE_LANES.length=0;LANE_SETS[2].forEach(z=>CUBE_LANES.push(z));
+  CUBEOPT.sp=1;CUBEOPT.gold=.14;
+  customCfg={name:'Cube Duel',cells:[[0,0,0,0,'norm']],mass:1,time:99999,need:1e9,th:mapIdx,dc:0,sk:0,gv:0,wx:0,met:false,from:'cube',duel:true,goal:DUEL.net?NET.meta.len:DUEL.len,d0:0,d1:2};
+  endl=null;resetPerks();applyUps();pstreak=0;level=1;score=0;combo=0;clearing=false;angle=0;av=0;r=5;rT=5;
+  hideIds(ALLOV);$('modeov').classList.add('hide');hideOv('menu');hideOv('res');
+  build();resetChain();updHud();$('hint').style.opacity=.9;
+  showBanner('⚔️ CUBE DUEL',2000);
+}
+$('derematch').onclick=()=>{audioInit();startDuel()};
+$('deset').onclick=()=>{audioInit();$('duelend').classList.add('hide');if(DUEL.net){netClose();onlOpen('play')}else dsOpen('play')};
+$('demenu').onclick=()=>{audioInit();cubeExit()};
+$('dquit').onclick=()=>{audioInit();cubeExit()};
+
+// ---------- duel setup screen ----------
+let dsCtx='mode';
+function dsChip(parent,label,on,col,fn){
+  const b=document.createElement('button');b.type='button';b.innerHTML=label;
+  b.style.cssText='flex:1;min-width:0;padding:10px 4px;font-size:12px;font-weight:900;text-transform:none;letter-spacing:0;border:2px solid '+col+';border-radius:4px;background:'+(on?col:'#101744')+';color:'+(on?'#000':'#fff');
+  b.onclick=()=>{audioInit();fn();dsRender()};parent.appendChild(b);
+}
+function dsRender(){
+  DUEL.opp=1;DUEL.net=false;$('dsopp').style.display='none';if($('dsopp').previousElementSibling)$('dsopp').previousElementSibling.style.display='none';$('dsdw').style.display='none';
+  const N=$('dslen');N.innerHTML='';
+  [[20,'Quick · 20'],[40,'Standard · 40'],[60,'Long · 60']].forEach(([n,t])=>dsChip(N,t,DUEL.len===n,'#ffd000',()=>{DUEL.len=n;lsSet('wo_dlen',String(n))}));
+  const S=$('dssong');if(!S.options.length){
+    SONGS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent='🎵 '+s.n+' · '+s.bpm+' BPM';S.appendChild(o)});
+    const o=document.createElement('option');o.value=SONGS.length;o.textContent='🔀 Shuffle';S.appendChild(o);
+    S.onchange=()=>{DUEL.song=parseInt(S.value)||0;lsSet('wo_dsong',String(DUEL.song))};
+  }
+  S.value=String(DUEL.song);
+  if(DUEL.opp===0){const rc=duelRec();$('dsinfo').textContent='Drag anywhere (or W A S D) to move · your record vs '+GDIFF[DUEL.diff].n+' Bot: '+rc.w[DUEL.diff]+'W – '+rc.l[DUEL.diff]+'L'}
+  else $('dsinfo').textContent='P1: drag the LEFT half of the screen or W A S D · P2: drag the RIGHT half or the arrow keys';
+}
+function dsOpen(ctx){dsCtx=ctx;dsRender();$('clvsel').classList.add('hide');$('onlsetup').classList.add('hide');$('duelsetup').classList.remove('hide');uiOpen=true}
+$('dsgo').onclick=()=>{audioInit();$('duelsetup').classList.add('hide');DUEL.opp=1;DUEL.net=false;startDuel()};
+$('dsback').onclick=()=>{$('duelsetup').classList.add('hide');if(dsCtx==='play')cubeExit()};
+
+window.duelTick=duelTick;
+// ---------------- ONLINE 1v1 DUEL (rooms over the game's Firebase database) ----------------
+const NET={on:false,me:'h',opp:'g',code:'',room:{},es:null,off:0,offP:null,seen:0,cl:{},gold:{},seenCl:{},sendT:0,rng:null,finT:0,go:false,meta:null,starting:false,closed:false,timers:[]};
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const RND=()=>(NET.on&&NET.rng)?NET.rng():Math.random();
+const netUrl=p=>CLOUD+'/duels/'+NET.code+p+'.json';
+function netPut(p,d){try{fetch(netUrl(p),{method:'PUT',body:JSON.stringify(d)}).catch(()=>{})}catch(e){}}
+const onMsg=m=>{$('onmsg').textContent=m||''};
+function netCode(){const a='ABCDEFGHJKLMNPQRSTUVWXYZ';let s='';for(let i=0;i<4;i++)s+=a[Math.floor(Math.random()*a.length)];return s}
+function netApply(path,data,merge){
+  const parts=path.split('/').filter(Boolean);
+  if(!parts.length){NET.room=merge?Object.assign(NET.room||{},data||{}):(data&&typeof data==='object'?data:{});return}
+  let o=NET.room;
+  for(let i=0;i<parts.length-1;i++){const k=parts[i];if(!o[k]||typeof o[k]!=='object')o[k]={};o=o[k]}
+  const k=parts[parts.length-1];
+  if(data===null)delete o[k];
+  else if(merge&&typeof data==='object')o[k]=Object.assign(o[k]&&typeof o[k]==='object'?o[k]:{},data);
+  else o[k]=data;
+}
+async function netOpen(){
+  NET.room={};NET.closed=false;NET.seen=Date.now();
+  const code=NET.code;let tk='';try{tk=await xTokGet()}catch(e){}
+  if(NET.closed||NET.code!==code)return;
+  const es=new EventSource(CLOUD+'/duels/'+code+'.json'+(tk?'?auth='+encodeURIComponent(tk):''));NET.es=es;
+  const hnd=merge=>e=>{let m;try{m=JSON.parse(e.data)}catch(x){return}if(!m)return;netApply(m.path||'/',m.data,merge);netOnRoom(m.path||'/')};
+  es.addEventListener('put',hnd(false));es.addEventListener('patch',hnd(true));
+  es.onerror=()=>{if(NET.es===es&&!NET.go&&!NET.closed&&es.readyState===2)onMsg('Connection lost')};
+}
+async function netOffset(){
+  let best=null;
+  for(let k=0;k<4;k++){
+    try{
+      const t0=Date.now();
+      const r=await fetch(netUrl('/ping/'+NET.me),{method:'PUT',body:'{".sv":"timestamp"}'});
+      let v=await r.json();
+      if(typeof v!=='number'){v=await (await fetch(netUrl('/ping/'+NET.me))).json()}
+      const t1=Date.now(),rtt=t1-t0,off=v-(t0+rtt/2);
+      if(typeof v==='number'&&(!best||rtt<best.rtt))best={rtt,off};
+    }catch(e){}
+  }
+  NET.off=best?best.off:0;
+}
+function netWaitUI(on,code,msg){
+  $('onmain').classList.toggle('hide',on);$('onwait').classList.toggle('hide',!on);
+  $('onlsetup').querySelector('.cbtabs').classList.toggle('hide',on);
+  $('oncodeshow').textContent=code||'';$('onstat').textContent=msg||'';onMsg('');
+}
+async function netCreate(){
+  if(!lsGet('wo_tok','')){onMsg('Log in first to play online (main menu → account), then try again.');return}
+  onMsg('Creating room…');
+  try{
+    let code,tries=0;
+    do{code=netCode();NET.code=code;const v=await (await fetch(netUrl('/meta'))).json();if(!v)break}while(++tries<6);
+    NET.me='h';NET.opp='g';NET.starting=false;NET.on=false;
+    let song=DUEL.song;if(song>=SONGS.length)song=Math.floor(Math.random()*SONGS.length);
+    const meta={song,len:DUEL.len,seed:Math.floor(Math.random()*2e9)+1,t:Date.now(),uid:xUid()};
+    const r=await fetch(netUrl('/meta'),{method:'PUT',body:JSON.stringify(meta)});if(!r.ok)throw 0;
+    NET.meta=meta;netOpen();netWaitUI(true,code,'Waiting for your friend… tell them this code');
+  }catch(e){NET.code='';onMsg("Couldn't reach the server. Check your connection and try again.")}
+}
+async function netJoin(code){
+  if(!lsGet('wo_tok','')){onMsg('Log in first to play online (main menu → account), then try again.');return}
+  code=(code||'').toUpperCase().replace(/[^A-Z]/g,'');
+  if(code.length!==4){onMsg('Type the 4-letter room code');return}
+  onMsg('Joining…');
+  try{
+    NET.code=code;
+    const meta=await (await fetch(netUrl('/meta'))).json();
+    if(!meta||typeof meta.seed!=='number'){NET.code='';onMsg('No room with that code');return}
+    const g=await (await fetch(netUrl('/guest'))).json();
+    if(g){NET.code='';onMsg('That room is already full');return}
+    NET.me='g';NET.opp='h';NET.meta=meta;NET.starting=false;NET.on=false;
+    netOpen();NET.offP=netOffset();
+    const w=await fetch(netUrl('/guest'),{method:'PUT',body:JSON.stringify(xUid())});if(!w.ok){NET.me='x';netClose();onMsg('Could not join that room (it may be full)');return}
+    netWaitUI(true,code,'Joined! Waiting for the host to start…');
+  }catch(e){NET.code='';onMsg("Couldn't reach the server. Check your connection and try again.")}
+}
+function netOnRoom(path){
+  const R=NET.room;if(!R)return;
+  if(path==='/'||path.indexOf('/'+NET.opp)===0)NET.seen=Date.now();
+  if(!R.meta){   // room deleted
+    if(NET.on&&!DUEL.over)netLeft();
+    else if(!NET.on&&NET.me==='g'&&NET.code){netClose();netWaitUI(false);onMsg('The host closed the room')}
+    return;
+  }
+  if(NET.me==='h'&&!NET.starting&&R.guest&&!NET.on)netHostStart();
+  if(NET.me==='g'&&!NET.starting&&typeof R.start==='number'&&!NET.on)netGuestStart(R.start);
+  const o=R[NET.opp];
+  if(o&&o.left&&NET.on&&!DUEL.over)netLeft();
+  if(NET.on&&o&&o.cl)for(const id in o.cl){if(NET.seenCl[id])continue;NET.seenCl[id]=1;netOppClaim(+id,+o.cl[id])}
+}
+async function netHostStart(){
+  NET.starting=true;onMsg('');
+  await netOffset();
+  const at=Date.now()+NET.off+4500;   // server time of "GO"
+  netPut('/start',at);netBegin(at);
+}
+async function netGuestStart(at){
+  NET.starting=true;
+  try{await NET.offP}catch(e){}
+  netBegin(at);
+}
+function netBegin(at){
+  NET.on=true;DUEL.net=true;DUEL.hum2=false;
+  NET.cl={};NET.gold={};NET.seenCl={};NET.finT=0;NET.go=false;NET.sendT=0;NET.seen=Date.now();
+  NET.rng=mulberry(NET.meta.seed);
+  startDuel();
+  $('hint').innerHTML='Get ready…<br>Drag anywhere (or W A S D) to move';
+  const T=at-NET.off;let last=-1;
+  const iv=setInterval(()=>{
+    if(!NET.on){clearInterval(iv);return}
+    const rem=T-Date.now();
+    if(rem<=0){clearInterval(iv);NET.go=true;started=true;$('hint').style.opacity=0;showBanner('GO!',800);return}
+    const sec=Math.ceil(rem/1000);if(sec!==last){last=sec;showBanner(String(sec),1000);tone(440+sec*0,.08,'square',.1,1)}
+  },60);
+  NET.timers.push(iv);
+}
+function netStep(dt){
+  const o=NET.room&&NET.room[NET.opp];
+  if(o&&o.pos){p2.tx=dcl(+o.pos.x||5,1,9);p2.tz=dcl(+o.pos.z||0,-9,9)}
+  NET.sendT-=dt;
+  if(NET.sendT<=0){NET.sendT=.08;netPut('/'+NET.me+'/pos',{x:+ball.position.x.toFixed(2),z:+ball.position.z.toFixed(2)})}
+  if(!DUEL.over&&Date.now()-NET.seen>9000)netLeft();
+}
+function netEffect(c,w,pts){
+  const at={x:c.x,y:c.y,z:c.z},col=new THREE.Color(w===1?P1C:P2C);
+  burst(at,col,16,10);shock(at,col,3);popup('+'+pts,w===1?'#ff7a45':'#00e5ff',at,c.gold?36:26);
+  if(c.gold){burst(at,new THREE.Color(0xffd23f),24,14);flash();cmGold()}
+  shake=Math.min(1,shake+.12);if(w===1){cmHit();vib(12)}
+}
+function netClaim(i){
+  const c=CUBE.list[i];if(!c)return;
+  const id=c.id,t=Math.round((cmNow()-CM.t0)*1000);
+  (NET.cl[id]||(NET.cl[id]={})).m=t;
+  netPut('/'+NET.me+'/cl/'+id,t);
+  scene.remove(c.m);CUBE.list.splice(i,1);CUBE.hits=(CUBE.hits|0)+1;
+  netEffect(c,1,c.gold?3:1);netScores();
+}
+function netOppClaim(id,t){
+  (NET.cl[id]||(NET.cl[id]={})).o=t;
+  const i=CUBE.list.findIndex(c=>c.id===id);
+  if(i>=0){const c=CUBE.list[i];scene.remove(c.m);CUBE.list.splice(i,1);CUBE.hits=(CUBE.hits|0)+1;netEffect(c,2,c.gold?3:1)}
+  netScores();
+}
+function netDrop(i){const c=CUBE.list[i];scene.remove(c.m);CUBE.list.splice(i,1);CUBE.miss=(CUBE.miss|0)+1}
+function netScores(){
+  let a=0,b=0;
+  for(const id in NET.cl){
+    const e=NET.cl[id],pts=NET.gold[id]?3:1;let w=0;
+    if(e.m!=null&&e.o!=null)w=e.m<e.o?1:e.m>e.o?2:(NET.me==='h'?1:2);else if(e.m!=null)w=1;else if(e.o!=null)w=2;
+    if(w===1)a+=pts;else if(w===2)b+=pts;
+  }
+  DUEL.s[1]=a;DUEL.s[2]=b;
+}
+function netEnd(title,info){
+  DUEL.over=true;CUBE.won=true;CUBE.dead=true;
+  const a=DUEL.s[1],b=DUEL.s[2];
+  $('dewin').textContent=title;
+  $('descore').innerHTML='<span style="color:#ff7a45">'+a+'</span> – <span style="color:#00e5ff">'+b+'</span>';
+  $('deinfo').textContent=info;
+  $('derematch').style.display='none';$('deset').textContent='⚔️ New match';
+  showBanner(title,1500);flash();vib([40,30,40,30,80]);
+  setTimeout(()=>{if(!DUEL.over)return;$('duelend').classList.remove('hide');uiOpen=true},1600);
+}
+function netFinish(){
+  if(DUEL.over)return;
+  if(!NET.finT){NET.finT=Date.now()+2200;return}   // short grace so the last claims can arrive
+  if(Date.now()<NET.finT)return;
+  netScores();
+  const a=DUEL.s[1],b=DUEL.s[2];
+  if(a>=b&&a!==b)[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12,1),i*110));else if(a<b){tone(220,.3,'sawtooth',.12,.5)}
+  netEnd(a>b?'🏆 YOU WIN!':a<b?'😵 YOU LOSE':'🤝 DRAW','Online 1v1 · room '+NET.code+' · '+(a+b)+' points claimed');
+}
+function netLeft(){if(DUEL.over)return;netScores();netEnd('🏳 FRIEND LEFT','Your friend left the match.')}
+function netClose(){
+  NET.closed=true;NET.timers.forEach(t=>clearInterval(t));NET.timers=[];
+  if(NET.es){try{NET.es.close()}catch(e){}NET.es=null}
+  if(NET.code){
+    try{
+      if(NET.me==='h')fetch(netUrl(''),{method:'DELETE',keepalive:true}).catch(()=>{});
+      else if(NET.me==='g')fetch(netUrl('/g/left'),{method:'PUT',body:'true',keepalive:true}).catch(()=>{});
+    }catch(e){}
+  }
+  NET.on=false;NET.go=false;NET.starting=false;NET.code='';NET.room={};DUEL.net=false;
+}
+addEventListener('pagehide',netClose);
+const _hideHint0=hideHint;hideHint=function(){if(DUEL.net&&!NET.go)return;_hideHint0()};
+
+// ---------- online screen ----------
+let onCtx='mode';
+function onChip(parent,label,on,col,fn){
+  const b=document.createElement('button');b.type='button';b.textContent=label;
+  b.style.cssText='flex:1;min-width:0;padding:10px 4px;font-size:12px;font-weight:900;text-transform:none;letter-spacing:0;border:2px solid '+col+';border-radius:4px;background:'+(on?col:'#101744')+';color:'+(on?'#000':'#fff');
+  b.onclick=()=>{audioInit();fn();onlRender()};parent.appendChild(b);
+}
+function onlRender(){
+  const N=$('onlen');N.innerHTML='';
+  [[20,'Quick · 20'],[40,'Standard · 40'],[60,'Long · 60']].forEach(([n,t])=>onChip(N,t,DUEL.len===n,'#ffd000',()=>{DUEL.len=n;lsSet('wo_dlen',String(n))}));
+  const S=$('onsong');if(!S.options.length){
+    SONGS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent='🎵 '+s.n+' · '+s.bpm+' BPM';S.appendChild(o)});
+    const o=document.createElement('option');o.value=SONGS.length;o.textContent='🔀 Random';S.appendChild(o);
+    S.onchange=()=>{DUEL.song=parseInt(S.value)||0;lsSet('wo_dsong',String(DUEL.song))};
+  }
+  S.value=String(DUEL.song);
+  const D=$('ondiff');D.innerHTML='';
+  GDIFF.forEach((d,i)=>onChip(D,d.i+' '+d.n,DUEL.diff===i,d.col,()=>{DUEL.diff=i;lsSet('wo_ddiff',String(i))}));
+  const rc=duelRec();$('onrec').textContent='Your record vs '+GDIFF[DUEL.diff].n+' Bot: '+rc.w[DUEL.diff]+'W – '+rc.l[DUEL.diff]+'L';
+}
+function onlOpen(ctx){
+  onCtx=ctx;netWaitUI(false);onlRender();
+  ['clvsel','duelsetup'].forEach(id=>$(id).classList.add('hide'));
+  $('onlsetup').classList.remove('hide');uiOpen=true;
+}
+$('oncode').oninput=e=>{e.target.value=e.target.value.toUpperCase().replace(/[^A-Z]/g,'')};
+$('oncreate').onclick=()=>{audioInit();netCreate()};
+$('onjoin').onclick=()=>{audioInit();netJoin($('oncode').value)};
+$('onbot').onclick=()=>{audioInit();DUEL.opp=0;lsSet('wo_dopp','0');DUEL.net=false;startDuel()};
+$('oncancel').onclick=()=>{netClose();netWaitUI(false)};
+$('onback').onclick=()=>{netClose();$('onlsetup').classList.add('hide');if(onCtx==='play')cubeExit()};
+
+// ---------- tabs + mode chooser buttons ----------
+(function(){
+  const b=document.createElement('button');b.className='pri';b.id='crmenu';
+  b.style.cssText='display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px;background:#ff3b5c;color:#fff';
+  b.textContent='🧊 Cube Rush · Levels & 1v1 Duel';
+  b.onclick=()=>{audioInit();clvOpen('mode')};
+  $('play').insertAdjacentElement('afterend',b);
+})();
+document.querySelectorAll('.cbtab').forEach(b=>b.onclick=()=>{
+  audioInit();const t=b.dataset.t,c=clvCtx||dsCtx||onCtx;
+  if(t==='lv'){$('onlsetup').classList.add('hide');clvOpen(c)}else if(t==='on'){onlOpen(c)}else{$('onlsetup').classList.add('hide');dsOpen(c)}
+});
+(function(){
+  const b=$('mdduel');
+  b.innerHTML='⚔️ 1v1 DUEL<br><small style="font-weight:600">Play a friend online (or practice vs a bot)</small>';
+  b.onclick=()=>{audioInit();onlOpen('mode')};
+  b.insertAdjacentHTML('afterend','<button id="mdtwo" style="display:block;width:100%;margin:10px 0 0;padding:12px;font-size:15px;text-transform:none;border-color:#ff7a45">👥 2 PLAYER (PC ONLY)<br><small style="font-weight:600">Two players, one keyboard</small></button>');
+  $('mdtwo').onclick=()=>{audioInit();dsOpen('mode')};
+})();
+
+
+// ---------- ONE CUBE RUSH TAB (play-cuberush) lives inside PLAY ----------
+(function(){
+  const t=$('crmenu');
+  t.id='play-cuberush-old';t.style.display='none';   // no separate menu button any more
+  const c=$('mdcube');
+  c.id='mdcube';c.setAttribute('data-tab','play-cuberush');
+  c.style.display='';
+  const d=c.querySelector('.d');if(d)d.textContent='Levels · 1v1 Duel · 2 Player';
+  c.onclick=()=>{audioInit();clvOpen('mode')};
+  // Duel / 2 Player are tabs inside the Cube Rush screen, not in the Play chooser
+  ['mdduel','mdtwo'].forEach(id=>{const e=$(id);if(e)e.style.display='none'});
+  // PLAY opens the chooser: Classic or Cube Rush
+  $('play').onclick=()=>{audioInit();$('modeov').classList.remove('hide')};
+})();
+
+// ---------- ONLINE 1v1 CHAT: side panel, messages live in the room's /chat node ----------
+(function(){
+  const BAD=/(fuck|shit|porn|nazi|rape)/i;
+  const st=document.createElement('style');
+  st.textContent='#ochat{position:fixed;left:8px;bottom:8px;z-index:60;display:none;flex-direction:column;align-items:flex-start;gap:6px;max-width:min(240px,62vw)}#ochat.on{display:flex}'+
+   '#ochbtn{margin:0;padding:8px 12px;font-size:13px;min-height:0;box-shadow:3px 3px 0 #000;background:#101744;color:#fff;border:2px solid #00e5ff}'+
+   '#ochn{background:#ff3b5c;color:#fff;border-radius:9px;padding:1px 6px;margin-left:4px;font-size:11px}'+
+   '#ochp{display:none;flex-direction:column;width:100%;background:rgba(7,11,42,.92);border:3px solid #000;box-shadow:4px 4px 0 #000;border-radius:6px;overflow:hidden}#ochat.open #ochp{display:flex}'+
+   '#ochl{max-height:34vh;min-height:70px;overflow-y:auto;padding:6px 8px;font-size:12px;line-height:1.35;text-align:left;word-break:break-word}'+
+   '#ochl div{margin:2px 0}#ochl b{font-weight:900}#ochl .sys{color:#9aa4d6;font-style:italic}'+
+   '#ochr{display:flex;gap:4px;padding:6px;border-top:2px solid #000;background:#0b1038}'+
+   '#ochi{flex:1;min-width:0;padding:7px;font:inherit;font-size:13px;background:#101744;color:#fff;border:2px solid #00e5ff;border-radius:4px}'+
+   '#ochs{margin:0;padding:6px 10px;min-height:0;font-size:14px;box-shadow:2px 2px 0 #000}';
+  document.head.appendChild(st);
+  const w=document.createElement('div');w.id='ochat';
+  w.innerHTML='<button type="button" id="ochbtn">💬 Chat<span id="ochn" style="display:none"></span></button>'+
+   '<div id="ochp"><div id="ochl"></div><div id="ochr"><input id="ochi" maxlength="100" placeholder="Say something…" autocomplete="off" autocapitalize="off" spellcheck="false"><button type="button" id="ochs">➤</button></div></div>';
+  document.body.appendChild(w);
+  const L=$('ochl'),I=$('ochi'),B=$('ochn');
+  let open=false,unread=0,seen={},lastSend=0;
+  function badge(){B.style.display=unread>0&&!open?'':'none';B.textContent=unread>9?'9+':String(unread)}
+  function setOpen(o){open=o;w.classList.toggle('open',o);if(o){unread=0;L.scrollTop=L.scrollHeight}else I.blur();badge()}
+  function line(html,cls){const d=document.createElement('div');if(cls)d.className=cls;if(html.nodeType)d.appendChild(html);else d.textContent=html;L.appendChild(d);while(L.childNodes.length>60)L.removeChild(L.firstChild);L.scrollTop=L.scrollHeight}
+  function show(on){
+    w.classList.toggle('on',on);
+    if(on){setOpen(true);if(!L.childNodes.length)line('Chat with your opponent here.','sys')}
+    else{setOpen(false);L.innerHTML='';seen={};unread=0;badge()}
+  }
+  function sync(){
+    const C=NET.room&&NET.room.chat;if(!C||!NET.code)return;
+    const me=xUid();
+    const ids=Object.keys(C).filter(id=>!seen[id]&&C[id]&&typeof C[id].txt==='string').sort((a,b)=>(+C[a].t||0)-(+C[b].t||0));
+    ids.forEach(id=>{
+      seen[id]=1;const m=C[id],mine=m.u===me;
+      const d=document.createElement('div'),n=document.createElement('b');
+      n.textContent=(mine?'You':String(m.by||'?').slice(0,16))+': ';
+      n.style.color=mine?'#ff7a45':'#00e5ff';
+      d.appendChild(n);d.appendChild(document.createTextNode(m.txt));
+      line(d);
+      if(!mine){if(!open){unread++;badge()}tone(880,.05,'sine',.06,1)}
+    });
+  }
+  function send(){
+    const txt=I.value.trim().slice(0,100);if(!txt||!NET.code)return;
+    if(Date.now()-lastSend<700)return;
+    if(BAD.test(txt)){line("That message isn't allowed.",'sys');return}
+    const by=String(sess||lsGet('wo_user','')||'').trim();
+    if(!/^[a-zA-Z0-9_]{3,16}$/.test(by)||!xUid()){line('Log in to chat.','sys');return}
+    lastSend=Date.now();I.value='';
+    fetch(netUrl('/chat'),{method:'POST',body:JSON.stringify({by,txt,u:xUid(),t:{'.sv':'timestamp'}})})
+      .then(r=>{if(!r.ok)line("Couldn't send that message.",'sys')}).catch(()=>line("Couldn't send that message.",'sys'));
+  }
+  $('ochbtn').onclick=()=>setOpen(!open);
+  $('ochs').onclick=send;
+  I.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();send()}});
+  I.addEventListener('keyup',e=>e.stopPropagation());
+  ['pointerdown','touchstart','mousedown'].forEach(ev=>w.addEventListener(ev,e=>e.stopPropagation()));
+  // hook into the room lifecycle
+  const _no=netOnRoom;netOnRoom=function(p){_no(p);sync()};
+  const _nopen=netOpen;netOpen=function(){const r=_nopen();show(true);return r};
+  const _nclose=netClose;netClose=function(){_nclose();show(false)};
+  const _nbegin=netBegin;netBegin=function(at){_nbegin(at);setOpen(false)};   // collapse when the match starts
+})();
+
+// ---------- finish checks + progress ----------
+setInterval(()=>{
+  cbProg();
+  if(!CUBE.on||CUBE.dead||!started||uiOpen||paused)return;
+  if(CUBE.goal>0&&CUBE.spawned>0&&CUBE.spawned>=CUBE.goal&&CUBE.list.length===0){DUEL.on?duelFinish():cubeWin()}
+},100);
 })();
 </script>
 </body></html>
