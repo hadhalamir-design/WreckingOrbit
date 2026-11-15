@@ -4831,7 +4831,7 @@ const INFO=['5 hearts · fewer cubes, they arrive slower · score x0.75','3 hear
   '#cbprog span{position:absolute;left:0;right:0;top:0;text-align:center;font-size:11px;line-height:12px;font-weight:900;text-shadow:0 1px 0 #000}'+
   '#duelhud{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:6;display:none;justify-content:center;align-items:stretch;gap:8px;pointer-events:none;padding:0 10px}'+
   '.dchip{min-width:86px;padding:8px 12px;border-radius:4px;background:#070b2a;border:2px solid;box-shadow:4px 4px 0 #000;text-align:center}'+
-  '.dchip .sm{font-size:10px}.dchip b{display:block;font-size:36px;line-height:1.05;font-variant-numeric:tabular-nums}'+
+  '#dp1,#dp2{max-width:140px;box-sizing:border-box}.dchip .sm{font-size:10px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dchip b{display:block;font-size:36px;line-height:1.05;font-variant-numeric:tabular-nums}'+
   '#dmid{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 4px;font-weight:900;font-size:11px;letter-spacing:.1em;text-shadow:0 2px 0 #000}'+
   '#dmid b{font-size:24px;color:#ffd000}'+
   '#dquit{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);z-index:6;display:none;font-size:11px;padding:6px 12px;opacity:.8}'+
@@ -4867,11 +4867,11 @@ const INFO=['5 hearts · fewer cubes, they arrive slower · score x0.75','3 hear
    '<button class="pri" id="dsgo" style="'+bs+'">Start ▶</button><button class="bk" id="dsback" style="'+bs+'">◀ Back</button></div></div>'+
 
    '<div id="onlsetup" class="ov hide" style="z-index:40"><div class="card" style="max-width:460px"><div class="logo small">🧊 CUBE RUSH</div><div class="cbtabs"><button type="button" class="cbtab" data-t="lv">🧊 Levels</button><button type="button" class="cbtab on" data-t="on">⚔️ 1v1 Duel</button><button type="button" class="cbtab" data-t="du">👥 2 Player (PC only)</button></div>'+
-   '<div id="onmain"><div class="tag" style="margin:8px 0 0;font-size:12px">Race a friend online: you both chase the same cubes and the first ball to touch one claims it. Gold = 3 points.</div>'+
+   '<div id="onmain"><div class="tag" style="margin:8px 0 0;font-size:12px">Race another player online: you both chase the same cubes and the first ball to touch one claims it. Gold = 3 points.</div>'+
    '<div class="sm sec" style="margin-top:8px">Match length</div><div id="onlen" style="display:flex;gap:6px"></div>'+
    '<div class="sm sec" style="margin-top:8px">Song</div><select id="onsong" style="width:100%;padding:10px;background:#101744;color:#fff;border:2px solid #00e5ff;border-radius:4px;font:inherit;font-size:13px;font-weight:800"></select>'+
    '<button class="pri" id="oncreate" style="'+bs+'">Create room</button>'+
-   '<div class="sm sec" style="margin-top:12px">Join a friend</div><div style="display:flex;gap:6px"><input id="oncode" maxlength="4" placeholder="CODE" autocomplete="off" style="flex:1;min-width:0;padding:10px;font:inherit;font-size:22px;font-weight:900;letter-spacing:8px;text-align:center;background:#101744;color:#fff;border:2px solid #00e5ff;border-radius:4px"><button id="onjoin" style="padding:10px 18px;font-size:15px">Join</button></div>'+
+   '<div class="sm sec" style="margin-top:12px">Join a room</div><div style="display:flex;gap:6px"><input id="oncode" maxlength="4" placeholder="CODE" autocomplete="off" style="flex:1;min-width:0;padding:10px;font:inherit;font-size:22px;font-weight:900;letter-spacing:8px;text-align:center;background:#101744;color:#fff;border:2px solid #00e5ff;border-radius:4px"><button id="onjoin" style="padding:10px 18px;font-size:15px">Join</button></div>'+
    '<div class="sm sec" style="margin-top:14px">No friend around?</div><div id="ondiff" style="display:flex;gap:6px"></div>'+
    '<button class="bk" id="onbot" style="'+bs+'">🤖 Practice vs Bot</button><div class="tag" id="onrec" style="margin-top:6px;font-size:11px"></div></div>'+
    '<div id="onwait" class="hide"><div class="tag" id="onstat" style="margin:14px 0 4px"></div><div id="oncodeshow" style="font-size:60px;font-weight:900;letter-spacing:12px;color:#ffd000;margin:6px 0 10px"></div><button class="bk" id="oncancel" style="'+bs+'">Cancel</button></div>'+
@@ -5079,7 +5079,7 @@ $('clvback').onclick=()=>{$('clvsel').classList.add('hide');if(clvCtx==='play')c
 $('mdcube').onclick=()=>{audioInit();clvOpen('mode')};
 (function(){
   const d=$('mdcube').querySelector('.d');if(d)d.textContent='15 music levels · hit every cube to clear them';
-  $('mdback').insertAdjacentHTML('beforebegin','<button id="mdduel" style="display:block;width:100%;margin:12px 0 0;padding:12px;font-size:15px;text-transform:none;border-color:#b44bff">⚔️ 1v1 CUBE DUEL<br><small style="font-weight:600">Race a friend or the Bot for every cube</small></button>');
+  $('mdback').insertAdjacentHTML('beforebegin','<button id="mdduel" style="display:block;width:100%;margin:12px 0 0;padding:12px;font-size:15px;text-transform:none;border-color:#b44bff">⚔️ 1v1 CUBE DUEL<br><small style="font-weight:600">Race a player or the Bot for every cube</small></button>');
   $('mdduel').onclick=()=>{audioInit();dsOpen('mode')};
 })();
 
@@ -5096,12 +5096,12 @@ function mkTag(txt,col){
   try{
     const c=document.createElement('canvas');c.width=128;c.height=64;const x=c.getContext('2d');
     x.fillStyle='rgba(7,11,42,.85)';x.fillRect(4,8,120,48);x.strokeStyle=col;x.lineWidth=5;x.strokeRect(4,8,120,48);
-    x.fillStyle=col;x.font='900 '+(txt.length>4?24:32)+'px monospace';x.textAlign='center';x.textBaseline='middle';x.fillText(txt,64,33);
+    x.fillStyle=col;x.font='900 '+(txt.length>10?15:txt.length>6?19:txt.length>4?24:32)+'px monospace';x.textAlign='center';x.textBaseline='middle';x.fillText(txt,64,33);
     const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
     s.scale.set(2.6,1.3,1);s.visible=false;scene.add(s);return s;
   }catch(e){return null}
 }
-const tg1=mkTag('P1','#ff7a45'),tg2=mkTag('P2','#00e5ff'),tgb=mkTag('BOT','#00e5ff'),tgY=mkTag('YOU','#ff7a45'),tgF=mkTag('FRIEND','#00e5ff');
+let tg1=mkTag('P1','#ff7a45'),tg2=mkTag('P2','#00e5ff'),tgb=mkTag('BOT','#00e5ff'),tgY=mkTag('YOU','#ff7a45'),tgF=mkTag('PLAYER','#00e5ff');
 const p2={x:5,z:-4.5,tx:5,tz:-4.5};
 const dp=new Map();   // active touches -> which player they steer
 
@@ -5121,7 +5121,7 @@ function duelSetup(){
   ball.position.set(5,1.2,sz);ball.velocity.set(0,0,0);
   $('lvl').textContent='⚔️ Cube Duel';
   $('hint').innerHTML=DUEL.hum2?'P1: drag the LEFT half of the screen or use W A S D<br>P2: drag the RIGHT half or use the arrow keys<br>First ball to touch a cube claims it!':'Drag anywhere (or use W A S D) to move<br>First ball to touch a cube claims it!';
-  $('dp2n').textContent=DUEL.net?'FRIEND':DUEL.hum2?'P2':'BOT';$('dp1').firstChild.textContent=(DUEL.hum2&&!DUEL.net)?'P1':'YOU';
+  $('dp2n').textContent=DUEL.net?(NET.oppName||'PLAYER'):DUEL.hum2?'P2':'BOT';$('dp1').firstChild.textContent=(DUEL.hum2&&!DUEL.net)?'P1':'YOU';
   duelPlace();duelHud();
 }
 function duelPlace(){
@@ -5272,7 +5272,7 @@ $('dsback').onclick=()=>{$('duelsetup').classList.add('hide');if(dsCtx==='play')
 
 window.duelTick=duelTick;
 // ---------------- ONLINE 1v1 DUEL (rooms over the game's Firebase database) ----------------
-const NET={on:false,me:'h',opp:'g',code:'',room:{},es:null,off:0,offP:null,seen:0,cl:{},gold:{},seenCl:{},sendT:0,rng:null,finT:0,go:false,meta:null,starting:false,closed:false,timers:[]};
+const NET={oppName:'',on:false,me:'h',opp:'g',code:'',room:{},es:null,off:0,offP:null,seen:0,cl:{},gold:{},seenCl:{},sendT:0,rng:null,finT:0,go:false,meta:null,starting:false,closed:false,timers:[]};
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const RND=()=>(NET.on&&NET.rng)?NET.rng():Math.random();
 const netUrl=p=>CLOUD+'/duels/'+NET.code+p+'.json';
@@ -5325,9 +5325,9 @@ async function netCreate(){
     do{code=netCode();NET.code=code;const v=await (await fetch(netUrl('/meta'))).json();if(!v)break}while(++tries<6);
     NET.me='h';NET.opp='g';NET.starting=false;NET.on=false;
     let song=DUEL.song;if(song>=SONGS.length)song=Math.floor(Math.random()*SONGS.length);
-    const meta={song,len:DUEL.len,seed:Math.floor(Math.random()*2e9)+1,t:Date.now(),uid:xUid()};
+    const meta={song,len:DUEL.len,seed:Math.floor(Math.random()*2e9)+1,t:Date.now(),uid:xUid()};const myN=String(sess||lsGet('wo_user','')||'').trim();if(/^[a-zA-Z0-9_]{3,16}$/.test(myN))meta.n=myN;
     const r=await fetch(netUrl('/meta'),{method:'PUT',body:JSON.stringify(meta)});if(!r.ok)throw 0;
-    NET.meta=meta;netOpen();netWaitUI(true,code,'Waiting for your friend… tell them this code');
+    NET.meta=meta;netOpen();netWaitUI(true,code,'Waiting for a player to join… share this code');
   }catch(e){NET.code='';onMsg("Couldn't reach the server. Check your connection and try again.")}
 }
 async function netJoin(code){
@@ -5344,11 +5344,20 @@ async function netJoin(code){
     NET.me='g';NET.opp='h';NET.meta=meta;NET.starting=false;NET.on=false;
     netOpen();NET.offP=netOffset();
     const w=await fetch(netUrl('/guest'),{method:'PUT',body:JSON.stringify(xUid())});if(!w.ok){NET.me='x';netClose();onMsg('Could not join that room (it may be full)');return}
-    netWaitUI(true,code,'Joined! Waiting for the host to start…');
+    {const gN=String(sess||lsGet('wo_user','')||'').trim();if(/^[a-zA-Z0-9_]{3,16}$/.test(gN))fetch(netUrl('/gn'),{method:'PUT',body:JSON.stringify(gN)}).catch(()=>{})}
+    netWaitUI(true,code,meta.n?('Joined '+meta.n+"'s room! Waiting for them to start…"):'Joined! Waiting for the host to start…');
   }catch(e){NET.code='';onMsg("Couldn't reach the server. Check your connection and try again.")}
+}
+function setOppName(n){
+  n=(typeof n==='string'?n:'').slice(0,16);if(n===NET.oppName)return;NET.oppName=n;
+  try{
+    if(DUEL.net)$('dp2n').textContent=n||'PLAYER';
+    if(tgF){const vis=tgF.visible;scene.remove(tgF);tgF=mkTag((n||'PLAYER').toUpperCase(),'#00e5ff');if(tgF)tgF.visible=vis}
+  }catch(e){}
 }
 function netOnRoom(path){
   const R=NET.room;if(!R)return;
+  setOppName(NET.me==='h'?R.gn:(R.meta&&R.meta.n));
   if(path==='/'||path.indexOf('/'+NET.opp)===0)NET.seen=Date.now();
   if(!R.meta){   // room deleted
     if(NET.on&&!DUEL.over)netLeft();
@@ -5443,7 +5452,7 @@ function netFinish(){
   if(a>=b&&a!==b)[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.22,'square',.12,1),i*110));else if(a<b){tone(220,.3,'sawtooth',.12,.5)}
   netEnd(a>b?'🏆 YOU WIN!':a<b?'😵 YOU LOSE':'🤝 DRAW','Online 1v1 · room '+NET.code+' · '+(a+b)+' points claimed');
 }
-function netLeft(){if(DUEL.over)return;netScores();netEnd('🏳 FRIEND LEFT','Your friend left the match.')}
+function netLeft(){if(DUEL.over)return;netScores();const n=NET.oppName||'Your opponent';netEnd('🏳 '+n.toUpperCase()+' LEFT',n+' left the match.')}
 function netClose(){
   NET.closed=true;NET.timers.forEach(t=>clearInterval(t));NET.timers=[];
   if(NET.es){try{NET.es.close()}catch(e){}NET.es=null}
@@ -5453,7 +5462,7 @@ function netClose(){
       else if(NET.me==='g')fetch(netUrl('/g/left'),{method:'PUT',body:'true',keepalive:true}).catch(()=>{});
     }catch(e){}
   }
-  NET.on=false;NET.go=false;NET.starting=false;NET.code='';NET.room={};DUEL.net=false;
+  NET.on=false;NET.go=false;NET.starting=false;NET.code='';NET.room={};DUEL.net=false;setOppName('');
 }
 addEventListener('pagehide',netClose);
 const _hideHint0=hideHint;hideHint=function(){if(DUEL.net&&!NET.go)return;_hideHint0()};
@@ -5504,7 +5513,7 @@ document.querySelectorAll('.cbtab').forEach(b=>b.onclick=()=>{
 });
 (function(){
   const b=$('mdduel');
-  b.innerHTML='⚔️ 1v1 DUEL<br><small style="font-weight:600">Play a friend online (or practice vs a bot)</small>';
+  b.innerHTML='⚔️ 1v1 DUEL<br><small style="font-weight:600">Play online (or practice vs a bot)</small>';
   b.onclick=()=>{audioInit();onlOpen('mode')};
   b.insertAdjacentHTML('afterend','<button id="mdtwo" style="display:block;width:100%;margin:10px 0 0;padding:12px;font-size:15px;text-transform:none;border-color:#ff7a45">👥 2 PLAYER (PC ONLY)<br><small style="font-weight:600">Two players, one keyboard</small></button>');
   $('mdtwo').onclick=()=>{audioInit();dsOpen('mode')};
@@ -5530,7 +5539,7 @@ document.querySelectorAll('.cbtab').forEach(b=>b.onclick=()=>{
 (function(){
   const BAD=/(fuck|shit|porn|nazi|rape)/i;
   const st=document.createElement('style');
-  st.textContent='#ochat{position:fixed;left:8px;bottom:8px;z-index:60;display:none;flex-direction:column;align-items:flex-start;gap:6px;max-width:min(240px,62vw)}#ochat.on{display:flex}'+
+  st.textContent='#ochat{position:fixed;left:8px;bottom:calc(env(safe-area-inset-bottom,0px) + 54px);z-index:8;display:none;flex-direction:column;align-items:flex-start;gap:6px;width:min(220px,56vw)}#ochat.on{display:flex}#ochat.dock{position:static;z-index:auto;width:100%;margin:10px 0 0;align-items:stretch}#ochat.dock #ochl{max-height:22vh}#ochat.dock #ochbtn{display:none}#ochat.dock #ochp{display:flex}'+
    '#ochbtn{margin:0;padding:8px 12px;font-size:13px;min-height:0;box-shadow:3px 3px 0 #000;background:#101744;color:#fff;border:2px solid #00e5ff}'+
    '#ochn{background:#ff3b5c;color:#fff;border-radius:9px;padding:1px 6px;margin-left:4px;font-size:11px}'+
    '#ochp{display:none;flex-direction:column;width:100%;background:rgba(7,11,42,.92);border:3px solid #000;box-shadow:4px 4px 0 #000;border-radius:6px;overflow:hidden}#ochat.open #ochp{display:flex}'+
@@ -5549,7 +5558,13 @@ document.querySelectorAll('.cbtab').forEach(b=>b.onclick=()=>{
   function badge(){B.style.display=unread>0&&!open?'':'none';B.textContent=unread>9?'9+':String(unread)}
   function setOpen(o){open=o;w.classList.toggle('open',o);if(o){unread=0;L.scrollTop=L.scrollHeight}else I.blur();badge()}
   function line(html,cls){const d=document.createElement('div');if(cls)d.className=cls;if(html.nodeType)d.appendChild(html);else d.textContent=html;L.appendChild(d);while(L.childNodes.length>60)L.removeChild(L.firstChild);L.scrollTop=L.scrollHeight}
+  function dock(card){   // lobby / end screen: chat sits INSIDE the card so it never covers its buttons
+    if(card&&card.contains(w)&&w.classList.contains('dock'))return;
+    if(card){w.classList.add('dock');card.appendChild(w)}
+    else{w.classList.remove('dock');if(w.parentNode!==document.body)document.body.appendChild(w)}
+  }
   function show(on){
+    dock(on?$('onwait'):null);
     w.classList.toggle('on',on);
     if(on){setOpen(true);if(!L.childNodes.length)line('Chat with your opponent here.','sys')}
     else{setOpen(false);L.innerHTML='';seen={};unread=0;badge()}
@@ -5587,7 +5602,8 @@ document.querySelectorAll('.cbtab').forEach(b=>b.onclick=()=>{
   const _no=netOnRoom;netOnRoom=function(p){_no(p);sync()};
   const _nopen=netOpen;netOpen=function(){const r=_nopen();show(true);return r};
   const _nclose=netClose;netClose=function(){_nclose();show(false)};
-  const _nbegin=netBegin;netBegin=function(at){_nbegin(at);setOpen(false)};   // collapse when the match starts
+  const _nbegin=netBegin;netBegin=function(at){_nbegin(at);dock(null);setOpen(false)};   // match starts: small floating button
+  const _nend=netEnd;netEnd=function(t,i){_nend(t,i);if(NET.code){dock($('duelend').querySelector('.card'));setOpen(true)}};   // result screen: chat inside the card
 })();
 
 // ---------- finish checks + progress ----------
