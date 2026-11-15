@@ -289,7 +289,7 @@ body.lh #abil{left:auto;right:8px}
 <div><b>3</b>Hit 🧨 TNT for chain explosions, 🟡 gold for bonus time</div>
 <div><b>4</b>Swing fast, then tap 💥 SMASH when the line turns yellow for a PERFECT smash (bad timing = weak smash)</div>
 <div><b>5</b>Topple blocks to fill the ⚡ meter, then tap ULTRA to blast everything near the ball</div>
-<div><b>6</b>☄ Meteors aim for YOUR ball! Swing away from the red ring to dodge for bonus points. A hit costs 3s and your streak</div><div><b>7</b>🎯 Land PERFECT smashes in a row to build a streak: score and coins go up. A mistimed smash loses it</div><div><b>8</b>Cyan 💠 weak points cause a mini collapse. Hit a boss tower's glowing core to bring it all down</div><div><b>9</b>♾ Endless: every wave is bigger. Pick a perk after each one and see how far you get</div><div><b>10</b>⏳ Slow-Mo · 🛡 Shield · 🌋 Quake are your abilities: tap the buttons on the side (keys 1, 2, 3). Perks only come from Endless waves</div></div>
+<div><b>6</b>☄ Meteors aim for YOUR ball! Swing away from the red ring to dodge for bonus points. A hit costs 3s and your streak</div><div><b>7</b>🎯 Land PERFECT smashes in a row to build a streak: score and coins go up. A mistimed smash loses it</div><div><b>8</b>Cyan 💠 weak points cause a mini collapse. Hit a boss tower's glowing core to bring it all down</div><div><b>9</b>♾ Endless: every wave is bigger. See how far you get</div><div><b>10</b>⏳ Slow-Mo · 🛡 Shield · 🌋 Quake are your abilities: tap the buttons on the side (keys 1, 2, 3).</div></div>
 <button class="pri" id="play">Play</button><button class="pri" id="endb" style="display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px;background:#00e5ff">♾ Endless</button><button class="pri" id="dlyb" style="display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px;background:#fff">📅 Daily challenge</button><button id="lbopen" style="display:block;width:100%;margin:10px 0 0;font-size:16px;padding:12px;background:#101744;border-color:#ffd000;color:#ffd000">🏆 Global score leaderboard</button>
 <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button id="mmt">🔊 Sound: on</button><button id="lhb">🖐 Buttons: right</button></div>
 <div class="sm sec">Maps</div><div id="maps"></div>
@@ -447,7 +447,7 @@ let grid=new THREE.GridHelper(60,60,0x8fbaff,0x4a86f0);grid.position.y=0.02;scen
 const world=new CANNON.World();
 world.gravity.set(0,-22,0);world.solver.iterations=18;world.allowSleep=true;
 world.broadphase=new CANNON.SAPBroadphase(world);
-world.defaultContactMaterial.friction=0.45;world.defaultContactMaterial.restitution=0.15;
+world.defaultContactMaterial.friction=0.45;world.defaultContactMaterial.restitution=0.14;
 const G=1,B=2,BA=4,L=8;
 const gb=new CANNON.Body({mass:0,shape:new CANNON.Plane(),collisionFilterGroup:G,collisionFilterMask:B|BA});
 gb.quaternion.setFromEuler(-Math.PI/2,0,0);world.addBody(gb);
@@ -523,6 +523,16 @@ const PERKS=[
 {k:'ultra',i:'💥',n:'Wide ULTRA',d:'ULTRA reaches 25% further',m:3},
 {k:'wind',i:'🕐',n:'Second Wind',d:'+15s once when time runs out',m:3}];
 let pk={};function resetPerks(){PERKS.forEach(p=>pk[p.k]=0)}resetPerks();
+// ---- DIFFICULTY: tm = time multiplier, ms = block weight, hearts = Cube Rush lives, cOff = Cube Rush density shift, cTb = extra beats cubes take to arrive ----
+const GDIFF=[
+ {n:'Easy',i:'🟢',sm:.75,tm:1.35,ms:.85,hearts:5,cOff:-1,cTb:1,col:'#3ddc84'},
+ {n:'Medium',i:'🟡',sm:1,tm:1,ms:1,hearts:3,cOff:0,cTb:0,col:'#ffd000'},
+ {n:'Hard',i:'🔴',sm:1.5,tm:.8,ms:1.15,hearts:2,cOff:1,cTb:0,col:'#ff3b5c'},
+ {n:'Insane',i:'💀',sm:2,tm:.65,ms:1.3,hearts:1,cOff:2,cTb:-1,col:'#b44bff'}];
+let gDiff=1; // Classic / Endless stay on Medium
+let cDiff=Math.max(0,Math.min(3,parseInt(lsGet('wo_cdiff','1'))));if(isNaN(cDiff))cDiff=1; // Cube Rush difficulty, chosen on the Cube Rush setup screen
+function cubeBestKey(){return cDiff===1?'wo_cbest':'wo_cbest'+cDiff}
+function cubeBestGet(){return parseInt(lsGet(cubeBestKey(),'0'))||0}
 const BALLS=[{n:'Classic',i:'🟡',need:1,m:1},{n:'Heavy',i:'🪨',need:3,m:1.6},{n:'Spiky',i:'🌵',need:6,m:1}];
 let plv=Math.max(1,parseInt(lsGet('wo_plv','1'))||1),xp=parseInt(lsGet('wo_xp','0'))||0,ballIdx=parseInt(lsGet('wo_ball','0'))||0;
 if(!BALLS[ballIdx]||BALLS[ballIdx].need>plv)ballIdx=0;
@@ -884,7 +894,7 @@ function build(q){
     let type='norm';
     if(customCfg)type=c[4]||'norm';
     else{const rr=Math.random();if(rr<M.gold)type='gold';else if((level>=2||M.tnt>.1)&&rr<M.gold+M.tnt)type='tnt';else if(level>=3&&rr>=M.gold+M.tnt&&rr<M.gold+M.tnt+.04)type='bouncy';else if(level>=5&&rr>=M.gold+M.tnt+.04&&rr<M.gold+M.tnt+.07)type='magnet'}
-    if(ci===weakIdx)type='weak';const body=new CANNON.Body({mass:cfg.mass*(type==='steel'?3:type==='feather'?.35:type==='core'?.6:1),shape:new CANNON.Box(new CANNON.Vec3(.6,.6,.6)),collisionFilterGroup:B,collisionFilterMask:G|B|BA,sleepSpeedLimit:0.4,sleepTimeLimit:0.5});
+    if(ci===weakIdx)type='weak';const body=new CANNON.Body({mass:cfg.mass*(cfg.daily?1:GDIFF[gDiff].ms)*(type==='steel'?3:type==='feather'?.35:type==='core'?.6:1),shape:new CANNON.Box(new CANNON.Vec3(.6,.6,.6)),collisionFilterGroup:B,collisionFilterMask:G|B|BA,linearDamping:0.02,angularDamping:0.12,sleepSpeedLimit:0.4,sleepTimeLimit:0.5});
     body.position.set(x,py,z);world.addBody(body);body.sleep();
     const pl=M.pal(c[1]/hmax);let col=new THREE.Color().setHSL(pl[0],pl[1],pl[2]),mat;
     if(customCfg&&c[3]>0&&type==='norm')col=new THREE.Color(CPAL[c[3]-1]);
@@ -900,7 +910,7 @@ function build(q){
     const blk={body,mesh,ox:x,oy:py,oz:z,gone:false,col,type,exploded:false,queued:false,removed:false,pvy:0,goneT:0,lastB:0,popped:false,wq:false};
     body.blk=blk;blocks.push(blk);
   }
-  started=false;failed=false;timeLeft=cfg.time+(cfg.endless?0:ups.t*4);towerH=hmax*s;smashCd=0;runCoins=0;rage=0;contUsed=0;coreDead=false;coreBlast=false;tntBoomed=0;wq=[];abCd=[0,0,0];shieldT=0;hasTnt=blocks.some(b=>b.type==='tnt');
+  started=false;failed=false;timeLeft=Math.ceil(cfg.time*((cfg.endless||cfg.daily||cfg.from==='cube')?1:GDIFF[gDiff].tm))+(cfg.endless?0:ups.t*4);towerH=hmax*s;smashCd=0;runCoins=0;rage=0;contUsed=0;coreDead=false;coreBlast=false;tntBoomed=0;wq=[];abCd=[0,0,0];shieldT=0;hasTnt=blocks.some(b=>b.type==='tnt');
   $('lvl').textContent=(customCfg?(customCfg.endless?'∞':customCfg.daily?'📅':'★'):level)+' · '+cfg.name;
   if(!q)showBanner((customCfg?'':'Level '+level+' · ')+cfg.name,1600);
 }
@@ -968,12 +978,19 @@ ball.addEventListener('collide',e=>{
     if(ballIdx===2){const sx=ob.position.x-ball.position.x,sy=ob.position.y-ball.position.y,sz=ob.position.z-ball.position.z,sd=Math.hypot(sx,sy,sz)||1;ob.applyImpulse(new CANNON.Vec3(sx/sd*ob.mass*6,sy/sd*ob.mass*3,sz/sd*ob.mass*6),new CANNON.Vec3(0,0,0))}
   }
   const v=Math.abs(e.contact.getImpactVelocityAlongNormal());
+  if(ob&&ob.blk&&ob.mass>0&&v>5&&ob.blk.type!=='core'){
+    // extra punch: blocks the ball hits get thrown along its path, popped up and sent tumbling
+    const k=Math.min(1,(v-5)/14),bv=ball.velocity,m=ob.mass;
+    ob.wakeUp();
+    ob.applyImpulse(new CANNON.Vec3(bv.x*m*.1*k,m*(.4+v*.03)*k,bv.z*m*.1*k),new CANNON.Vec3(0,0,0));
+    const sp=(1+v*.1)*k;ob.angularVelocity.x+=(Math.random()-.5)*sp*2;ob.angularVelocity.y+=(Math.random()-.5)*sp;ob.angularVelocity.z+=(Math.random()-.5)*sp*2;
+  }
   if(v<2.5||t-lastHit<70)return;lastHit=t;thud(v);shake=Math.min(1,shake+v/28);
   if(v>13&&slowCd<=0){slowT=0.3;slowCd=1.8}
   if(v>10){hitStop=Math.min(.08,v/320);fovKick=Math.min(10,fovKick+v/4);noise(.25,Math.min(.3,v/60),3500);shock(ball.position,ballMesh.material.color,Math.min(3.5,1+v/8))}
   if(v>9)vib(15);
   burst(ball.position,ballMesh.material.color,Math.min(14,Math.floor(v/1.5)),6);
-  if(ob&&ob.blk&&v>11){burst(ob.position,ob.blk.col,10,9);popup(v>20?'CRUSH!':'WHAM!','#ffffff',ob.position,v>20?30:24);if(v>14){score+=Math.round(v);updHud()}}
+  if(ob&&ob.blk&&v>11){burst(ob.position,ob.blk.col,10,9);popup('WHAM!','#ffffff',ob.position,24);if(v>14){score+=Math.round(v);updHud()}}
 });
 
 function detonate(b){
@@ -981,10 +998,10 @@ function detonate(b){
   const p=b.body.position,cx=p.x,cy=p.y,cz=p.z;
   world.removeBody(b.body);b.mesh.visible=false;b.removed=true;
   if(!b.gone){b.gone=true;extra++}
-  const R=3.4*(1+pk.boom*.4),at={x:cx,y:cy,z:cz};
+  const R=2.4*(1+pk.boom*.4),at={x:cx,y:cy,z:cz};
   burst(at,new THREE.Color(0xffc21a),28,12);burst(at,new THREE.Color(0xffe14a),16,9);
   shake=Math.min(1.4,shake+.8);flash();vib(40);
-  noise(.5,.4,2800);shock(at,new THREE.Color(0xffc21a),4);fovKick=Math.min(12,fovKick+6);hitStop=.05;mp('tnt',1);
+  noise(.5,.4,2800);shock(at,new THREE.Color(0xffc21a),3);fovKick=Math.min(12,fovKick+6);hitStop=.05;mp('tnt',1);
   tone(90,.5,'sawtooth',.35,.2);tone(300,.25,'square',.12,.3);
   const now=performance.now();
   for(const o of blocks){
@@ -994,8 +1011,8 @@ function detonate(b){
     if(d>R)continue;
     if(o.type==='tnt'){if(!o.queued){o.queued=true;pend.push({b:o,t:now+110})}continue}
     o.body.wakeUp();
-    const f=o.body.mass*(18*(1-d/R)+4);
-    o.body.applyImpulse(new CANNON.Vec3(dx/d*f,dy/d*f+f*.5,dz/d*f),new CANNON.Vec3(.3,.3,0));
+    const f=o.body.mass*(13*(1-d/R)+3);
+    o.body.applyImpulse(new CANNON.Vec3(dx/d*f,dy/d*f+f*.3,dz/d*f),new CANNON.Vec3(.3,.3,0));
   }
   timeLeft+=2;
   popup('BOOM! +2s','#ffc21a',at,28);
@@ -1111,6 +1128,7 @@ function impactPulse(q){
   clearTimeout(impactTimer);impactTimer=setTimeout(()=>{document.body.classList.remove('perfect-impact','normal-impact');$('hud').classList.remove('impact-punch');$('score').classList.remove('score-punch');$('smash').classList.remove('hit-punch')},480);
 }
 function smash(){
+  if(customCfg&&customCfg.from==='cube')return;
   if(uiOpen||paused||smashCd>0)return;
   started=true;$('hint').style.opacity=0;
   const dx=-ball.position.x,dz=-ball.position.z,d=Math.hypot(dx,dz)||1;
@@ -1141,6 +1159,7 @@ function smash(){
   smashCd=smashCdMax();
 }
 function ult(){
+  if(customCfg&&customCfg.from==='cube')return;
   if(uiOpen||paused||clearing||failed)return;
   if(rage<100){popup('⚡ Fill the meter first · '+Math.floor(rage)+'%','#ff3b5c',ball.position,22);return}
   started=true;$('hint').style.opacity=0;rage=0;
@@ -1167,6 +1186,7 @@ const ABIL=[
      o.body.applyImpulse(new CANNON.Vec3(Math.cos(a)*f,f*.7,Math.sin(a)*f),new CANNON.Vec3(.3,.3,0))}
    shake=1.3;flash();vib([40,20,40]);noise(.6,.4,1600);tone(60,.6,'sawtooth',.3,.3);popup('🌋 QUAKE!','#ffd000',{x:0,y:towerH*.6,z:0},32)}}];
 function useAbil(i){
+  if(customCfg&&customCfg.from==='cube')return;
   if(uiOpen||paused||clearing||failed||abCd[i]>0)return;
   started=true;$('hint').style.opacity=0;abCd[i]=ABIL[i].cd;ABIL[i].f();
 }
@@ -1192,7 +1212,7 @@ $('smash').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();sma
 $('ult').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();ult()});
 function restart(){if(uiOpen)return;if(customCfg&&customCfg.endless){startEndless();return}score=0;combo=0;pstreak=0;clearing=false;angle=0;av=0;r=5;rT=5;build();resetChain();updHud()}
 function updHud(){
-  if(score<dispScore)dispScore=score;if(dispScore===score)$('score').textContent=score;$('best').textContent=Math.max(bestScore,score);
+  if(score<dispScore)dispScore=score;if(dispScore===score)$('score').textContent=score;$('best').textContent=(customCfg&&customCfg.from==='cube')?Math.max(cubeBestGet(),score):Math.max(bestScore,score);
   const c=$('combo');c.textContent=combo>1?'x'+combo+' combo':'';{const sk=$('strk');if(sk)sk.textContent=pstreak>0?'🎯 PERFECT x'+pstreak+' · score x'+smul().toFixed(2):''}
   if(combo>1){c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump')}
 }
@@ -1241,7 +1261,7 @@ function frame(now){
   rT=Math.max(2,Math.min(8.5,rT));
   let ts=1;
   if(slowT>0){slowT-=dt;ts=0.3}
-  if(hitStop>0){hitStop-=dt;ts=0.04}
+  if(hitStop>0){hitStop=0}
   slowCd-=dt;
   acc+=dt*ts;let n=0;
   while(acc>=h&&n<4){substep();acc-=h;n++}
@@ -1435,7 +1455,7 @@ function weakBurst(b){
 
 // ===== ENDLESS MODE =====
 function startEndless(){
-  resetPerks();applyUps();endl={wave:1,carry:60+ups.t*4};score=0;pstreak=0;startWave();
+  resetPerks();applyUps();endl={wave:1,carry:Math.round(60*GDIFF[gDiff].tm)+ups.t*4};score=0;pstreak=0;startWave();
 }
 function startWave(){
   customCfg=endlessCfg(endl.wave,Math.ceil(endl.carry));customCfg.from='endless';
@@ -1488,7 +1508,8 @@ function endlessWin(){
   if(score>bestScore){bestScore=score;lsSet('wo_best',bestScore)}
   if(sess&&xUid())submitGlobalScore(score);
   endl.carry=timeLeft+20;endl.wave++;
-  showPerks(boss,w);
+  startWave();
+  if(bossSkinMsg){popup('🎨'+bossSkinMsg.replace(' · 🎨',''),'#ffd000',ball.position,26);bossSkinMsg=''}
 }
 let megaUltra=false;
 const MEGA=[{i:'⏱',n:'Time Bank',d:'+12s on the next wave',f:()=>{endl.carry+=12}},{i:'🪙',n:'Gold Rush',d:'+300 coins',f:()=>{addCoins(300)}},{i:'💯',n:'Score Surge',d:'+1500 points',f:()=>{score+=1500}},{i:'🛡',n:'Meteor Ward',d:'Blocks 2 more meteor hits',f:()=>{pk.storm+=2}},{i:'⚡',n:'Ultra Charge',d:'Start the next wave with ULTRA ready',f:()=>{megaUltra=true}}];
@@ -2869,7 +2890,7 @@ function cubeClear(){CUBE.list.forEach(c=>scene.remove(c.m));CUBE.list.length=0}
 function cubeReset(){
   cubeClear();
   CUBE.on=!!(customCfg&&customCfg.from==='cube');
-  CUBE.hits=0;CUBE.streak=0;CUBE.spawnT=2.5;CUBE.dead=false;
+  CUBE.hits=0;CUBE.streak=0;CUBE.spawnT=2.5;CUBE.dead=false;CUBE.lives=CUBE.maxLives=GDIFF[cDiff].hearts;CUBE.best=cubeBestGet();cubeHearts();
   const tm=$('tm');if(tm)tm.style.visibility=CUBE.on?'hidden':'';
   if(CUBE.on){
     blocks.forEach(b=>{if(!b.removed){world.removeBody(b.body);b.removed=true}b.mesh.visible=false});
@@ -2896,9 +2917,9 @@ function cubeHit(i){
   const c=CUBE.list[i],at={x:c.x,y:c.y,z:c.z};
   scene.remove(c.m);CUBE.list.splice(i,1);
   CUBE.hits++;CUBE.streak++;
-  const pts=10*(1+Math.floor(CUBE.streak/5));score+=pts;addCoins(1);updHud();
+  const pts=Math.round(10*(1+Math.floor(CUBE.streak/5))*GDIFF[cDiff].sm);score+=pts;addCoins(1);updHud();
   burst(at,new THREE.Color(0xff3b5c),16,10);shock(at,new THREE.Color(0xffffff),3);
-  popup('+'+pts,'#ffffff',at,24);tone(520+Math.min(CUBE.streak,12)*40,.1,'square',.1,1.5);
+  popup('+'+pts,'#ffffff',at,24);
   shake=Math.min(1,shake+.3);vib(15);
   $('lvl').textContent='🧊 Cube Rush · '+CUBE.hits;
 }
@@ -2911,27 +2932,29 @@ function cubeMiss(c){
 }
 function cubeOver(){
   let nb=false;
-  if(score>CUBE.best){CUBE.best=score;lsSet('wo_cbest',score);nb=score>0}
+  if(score>CUBE.best){CUBE.best=score;lsSet(cubeBestKey(),score);nb=score>0}
   $('banner').style.opacity=0;
-  $('cbs').textContent='Cubes hit: '+CUBE.hits+' · Score: '+score+' · Best: '+CUBE.best+(nb?' 🏆 NEW BEST!':'');
+  $('cbs').textContent=GDIFF[cDiff].i+' '+GDIFF[cDiff].n+' · ♪ '+SONGS[CM.song].n+' · Cubes hit: '+CUBE.hits+' · Score: '+score+' · Best ('+GDIFF[cDiff].n+'): '+CUBE.best+(nb?' 🏆 NEW BEST!':'');
   $('cbov').classList.remove('hide');uiOpen=true;
 }
 setInterval(()=>{
   const now=performance.now(),dt=Math.min(.1,(now-CUBE.last)/1000);CUBE.last=now;
+  cmSyncAudio(dt);
   if(!CUBE.on||CUBE.dead||uiOpen||paused||!started)return;
-  CUBE.spawnT-=dt;
-  if(CUBE.spawnT<=0){cubeSpawn();CUBE.spawnT=Math.max(.7,1.8-CUBE.hits*.03)/Math.sqrt(CUBEOPT.sp)*(.9+Math.random()*.3)}
+  cmSpawnTick();
   for(let i=CUBE.list.length-1;i>=0;i--){
-    const c=CUBE.list[i];c.x+=c.sp*dt;
+    const c=CUBE.list[i];if(c.tA!=null)c.x=CM_XC-(c.tA-cmNow())*c.sp;else c.x+=c.sp*dt;
     c.m.position.set(c.x,c.y,c.z);c.m.rotation.x+=dt*3;c.m.rotation.z+=dt*2;
     const dx=c.x-ball.position.x,dy=c.y-ball.position.y,dz=c.z-ball.position.z;
     if(Math.hypot(dx,dy*.6,dz)<3.4){cubeHit(i);continue}
     if(c.x>=10.5){cubeMiss(c);return}
   }
+  cmPulse();
 },16);
 // third-person camera behind the player, looking down the lane
 const _crR=renderer.render;
 renderer.render=function(sc2,c2_){
+  linkMeshes.forEach(m=>{m.visible=!(CUBE.on&&!advOn)});anchorMesh.visible=!(CUBE.on&&!advOn);ring.visible=!(CUBE.on&&!advOn);
   if(CUBE.on&&!advOn){
     cam.position.set(27+(Math.random()-.5)*shake*.8,14+(Math.random()-.5)*shake*.8,0);
     cam.lookAt(-4,1,0);
@@ -2945,7 +2968,7 @@ renderer.render=function(sc2,c2_){
    '<div id="modeov" class="ov hide" style="z-index:30"><div class="card" style="max-width:520px"><div class="logo small">CHOOSE MODE</div>'+
    '<div id="mdrow" style="display:flex;gap:12px;margin:14px 0 4px">'+
    '<button id="mdclassic" style="flex:1;padding:18px 6px;font-size:15px;text-transform:none">🏗 CLASSIC<br><small style="font-weight:600">Smash the towers before time runs out</small></button>'+
-   '<button id="mdcube" style="flex:1;padding:18px 6px;font-size:15px;text-transform:none;border-color:#ff3b5c">🧊 CUBE RUSH<br><small style="font-weight:600">Hit every cube. Miss one and it is over</small></button>'+
+   '<button id="mdcube" style="flex:1;padding:18px 6px;font-size:15px;text-transform:none;border-color:#ff3b5c">🧊 CUBE RUSH<br><small style="font-weight:600">Miss a cube and lose a heart</small></button>'+
    '</div><button class="bk" id="mdback" style="'+bs+'">◀ Back</button></div></div>'+
    '<div id="cbov" class="ov hide" style="z-index:30"><div class="card"><div class="logo small">🧊 GAME OVER</div>'+
    '<div class="tag" id="cbs" style="margin:10px 0"></div>'+
@@ -2972,7 +2995,7 @@ build=function(q){
   if(cLane){scene.remove(cLane);cLane.traverse(o=>{if(o.geometry)o.geometry.dispose()});cLane=null}
   _cb2(q);
   cTx=cX=5;cTz=cZ=0;cP0=null;
-  $('hint').innerHTML=CUBE.on?'Drag anywhere to move the ball<br>Touch every cube · miss one and it is over':HINT0;
+  $('hint').innerHTML=CUBE.on?'Drag anywhere to move the ball<br>Miss a cube and lose a heart':HINT0;
   if(CUBE.on){
     cLane=new THREE.Group();
     CUBE_LANES.forEach(z=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(70,.12),new THREE.MeshBasicMaterial({color:0xff3b5c,transparent:true,opacity:.25}));m.rotation.x=-Math.PI/2;m.position.set(0,.06,z);cLane.add(m)});
@@ -2989,8 +3012,14 @@ addEventListener('pointermove',e=>{
 addEventListener('pointerup',()=>{cP0=null});
 addEventListener('pointercancel',()=>{cP0=null});
 const _subOrbit=substep;
+let ropeCs=null,ropeIsOff=false;
+function ropeSet(off){
+  if(!ropeCs){const bs=[anchor,ball].concat(links);ropeCs=world.constraints.filter(c=>bs.indexOf(c.bodyA)>=0&&bs.indexOf(c.bodyB)>=0)}
+  if(off===ropeIsOff)return;ropeIsOff=off;ropeCs.forEach(c=>{off?c.disable():c.enable()});
+}
 substep=function(){
-  if(!CUBE.on||advOn)return _subOrbit();
+  if(!CUBE.on||advOn){ropeSet(false);return _subOrbit()}
+  ropeSet(true);
   const ks=12*h;
   if(keys.KeyW||keys.ArrowUp)cTx=cClamp(cTx-ks);
   if(keys.KeyS||keys.ArrowDown)cTx=cClamp(cTx+ks);
@@ -3002,7 +3031,9 @@ substep=function(){
   anchor.velocity.set((cX-anchor.position.x)/h,0,(cZ-anchor.position.z)/h);
   ball.velocity.x+=(cX-ball.position.x)*40*h;ball.velocity.z+=(cZ-ball.position.z)*40*h;
   const dmp=Math.exp(-4*h);ball.velocity.x*=dmp;ball.velocity.z*=dmp;
+  ball.velocity.y=0;ball.position.y=1.2;
   world.step(h);
+  ball.velocity.y=0;ball.position.y=1.2;
 };
 
 // ---- CUBE RUSH SATISFACTION: gold cubes, double spawns, hit-stop, streak praise, lane guides ----
@@ -3022,28 +3053,198 @@ const CPRAISE={5:'NICE!',10:'GREAT!',15:'AWESOME!',20:'MEGA!',30:'INSANE!!',40:'
 const _ch=cubeHit;
 cubeHit=function(i){
   const c=CUBE.list[i],gold=c&&c.gold,at=c?{x:c.x,y:c.y,z:c.z}:{x:ball.position.x,y:ball.position.y,z:ball.position.z};
-  _ch(i);
+  _ch(i);cmHit();
   const s=CUBE.streak;
   hitStop=.06;fovKick=Math.min(12,fovKick+5+Math.min(s,10)*.4);
   shock(at,ballMesh.material.color,4);burst(at,new THREE.Color(0xffffff),10,12);
-  if(gold){score+=50;addCoins(10);burst(at,new THREE.Color(0xffd23f),30,14);popup('⭐ GOLD +50','#ffd23f',{x:at.x,y:at.y+1.5,z:at.z},30);flash();tone(1200,.2,'triangle',.14,1.5)}
+  if(gold){score+=Math.round(50*GDIFF[cDiff].sm);addCoins(10);burst(at,new THREE.Color(0xffd23f),30,14);popup('⭐ GOLD +50','#ffd23f',{x:at.x,y:at.y+1.5,z:at.z},30);flash();cmGold()}
   combo=s;comboT=4;
   const w=CPRAISE[s]||(s>50&&s%10===0?'LEGENDARY!':'');
   if(w){
-    score+=s*10;addCoins(s);
-    popup(w+' x'+s+' · +'+(s*10),'#ffd000',{x:at.x,y:at.y+2.5,z:at.z},34);
+    const pb=Math.round(s*10*GDIFF[cDiff].sm);score+=pb;addCoins(s);
+    popup(w+' x'+s+' · +'+pb,'#ffd000',{x:at.x,y:at.y+2.5,z:at.z},34);
     flash();slowT=.25;slowCd=0;vib([30,20,30]);
-    [0,4,7,12].forEach((n,k)=>setTimeout(()=>tone(440*Math.pow(2,n/12),.18,'square',.1,1),k*60));
+    cmArp();
   }
   updHud();
 };
+
+// ---- CUBE RUSH HEARTS: 3 lives, a missed cube costs one ----
+function cubeHearts(){
+  let h=document.getElementById('cbhearts');
+  if(!h){h=document.createElement('div');h.id='cbhearts';h.style.cssText='position:fixed;top:calc(env(safe-area-inset-top,0px) + 74px);left:50%;transform:translateX(-50%);z-index:6;font-size:28px;letter-spacing:4px;pointer-events:none;text-shadow:0 2px 0 #000;display:none';document.body.appendChild(h)}
+  const n=Math.max(0,CUBE.lives==null?3:CUBE.lives);
+  const H=CUBE.maxLives||3;h.textContent='❤️'.repeat(n)+'🖤'.repeat(Math.max(0,H-n));
+  h.style.display=CUBE.on?'block':'none';
+}
+const _cubeMissFinal=cubeMiss;
+cubeMiss=function(c){
+  CUBE.lives=(CUBE.lives==null?3:CUBE.lives)-1;
+  const i=CUBE.list.indexOf(c);if(i>=0){scene.remove(c.m);CUBE.list.splice(i,1)}
+  CUBE.streak=0;combo=0;cubeHearts();
+  if(CUBE.lives>0){
+    popup('💔 MISSED! '+CUBE.lives+(CUBE.lives===1?' heart left':' hearts left'),'#ff3b5c',{x:Math.min(c.x,9),y:c.y+1.5,z:c.z},30);
+    flash();shake=1.1;vib([50,30,50]);noise(.3,.3,2200);tone(130,.35,'sawtooth',.25,.4);updHud();
+    return;
+  }
+  const h=document.getElementById('cbhearts');if(h)h.style.display='none';
+  _cubeMissFinal(c);
+};
+// ---- CUBE RUSH MUSIC: original chiptune songs, cubes spawn and land on the beat ----
+const CM={on:false,t0:0,spb:.45,Tb:4,song:0,lastSong:-1,sel:Math.max(0,parseInt(lsGet('wo_csong','0'))||0),next:0,ev:32,lastEv:0,lane:2,vt:0,gain:null,fx:null,nb:null};
+const CM_XC=1.6; // x where a cube touches the ball when the ball sits at its start spot
+const SONGS=[
+ {n:'Neon Rush',bpm:132,kick:[0,4,8,12],sn:[4,12],hat:0,
+  ch:[[45,[57,60,64]],[41,[53,57,60]],[48,[55,60,64]],[43,[55,59,62]],[45,[57,60,64]],[41,[53,57,60]],[43,[55,59,62]],[40,[56,59,64]]],
+  lead:[[0,81,3],[3,79,1],[4,76,4],[8,79,2],[10,81,2],[12,84,4],[16,81,3],[19,79,1],[20,77,4],[24,76,2],[26,77,2],[28,81,4],[32,79,3],[35,76,1],[36,72,4],[40,76,2],[42,79,2],[44,84,4],[48,83,2],[50,81,2],[52,79,4],[56,74,2],[58,79,2],[60,83,4]]},
+ {n:'Pixel Sunrise',bpm:118,kick:[0,6,8,11],sn:[4,12],hat:0,
+  ch:[[48,[60,64,67]],[43,[59,62,67]],[45,[57,60,64]],[41,[57,60,65]],[48,[60,64,67]],[43,[59,62,67]],[41,[57,60,65]],[43,[59,62,67]]],
+  lead:[[0,84,2],[2,79,2],[4,76,4],[8,79,2],[10,84,2],[12,88,4],[16,83,2],[18,79,2],[20,74,4],[24,79,2],[26,83,2],[28,86,4],[32,81,2],[34,84,2],[36,88,4],[40,84,2],[42,81,2],[44,76,4],[48,81,2],[50,77,2],[52,84,4],[56,81,2],[58,77,2],[60,72,4]]},
+ {n:'Void Runner',bpm:150,kick:[0,4,8,10,12],sn:[4,12],hat:1,
+  ch:[[38,[57,62,65]],[34,[58,62,65]],[41,[57,60,65]],[36,[55,60,64]],[38,[57,62,65]],[34,[58,62,65]],[36,[55,60,64]],[33,[57,61,64]]],
+  lead:[[0,86,2],[2,86,1],[3,89,1],[4,93,3],[8,89,2],[10,86,2],[12,81,4],[16,89,2],[18,86,2],[20,82,4],[24,86,2],[26,89,2],[28,94,4],[32,89,2],[34,84,2],[36,81,4],[40,84,2],[42,89,2],[44,93,4],[48,91,2],[50,88,2],[52,84,4],[56,79,2],[58,84,2],[60,88,4]]},
+ {n:'Cyber Drift',bpm:124,kick:[0,3,8,11],sn:[4,12],hat:0,
+  ch:[[40,[59,64,67]],[36,[60,64,67]],[43,[59,62,67]],[38,[57,62,66]],[40,[59,64,67]],[36,[60,64,67]],[38,[57,62,66]],[35,[59,63,66]]],
+  lead:[[0,83,2],[2,79,2],[4,76,3],[7,79,1],[8,83,4],[12,86,2],[14,83,2],[16,84,2],[18,79,2],[20,76,4],[24,79,2],[26,84,2],[28,88,4],[32,86,3],[35,83,1],[36,79,4],[40,74,2],[42,79,2],[44,83,4],[48,81,2],[50,78,2],[52,74,4],[56,78,2],[58,81,2],[60,86,4]]},
+ {n:'Candy Arcade',bpm:142,kick:[0,4,8,12],sn:[4,12],hat:0,
+  ch:[[43,[55,59,62]],[38,[57,62,66]],[40,[59,64,67]],[36,[55,60,64]],[43,[55,59,62]],[38,[57,62,66]],[36,[55,60,64]],[38,[57,62,66]]],
+  lead:[[0,86,2],[2,83,2],[4,79,2],[6,83,2],[8,86,4],[12,91,4],[16,90,2],[18,86,2],[20,81,2],[22,86,2],[24,90,4],[28,93,4],[32,91,2],[34,88,2],[36,83,2],[38,88,2],[40,91,4],[44,95,4],[48,91,2],[50,88,2],[52,84,2],[54,88,2],[56,91,4],[60,84,4]]},
+ {n:'Midnight Drive',bpm:112,kick:[0,6,8,14],sn:[4,12],hat:0,
+  ch:[[36,[60,63,67]],[32,[56,60,63]],[39,[58,63,67]],[34,[58,62,65]],[36,[60,63,67]],[32,[56,60,63]],[34,[58,62,65]],[31,[55,59,62]]],
+  lead:[[0,79,3],[3,75,1],[4,72,4],[8,75,2],[10,79,2],[12,84,4],[16,80,3],[19,75,1],[20,72,4],[24,75,2],[26,80,2],[28,84,4],[32,82,3],[35,79,1],[36,75,4],[40,79,2],[42,82,2],[44,87,4],[48,82,2],[50,77,2],[52,74,4],[56,77,2],[58,82,2],[60,86,4]]},
+ {n:'Laser Storm',bpm:160,kick:[0,4,8,12,14],sn:[4,12],hat:1,
+  ch:[[45,[57,60,64]],[43,[55,59,62]],[41,[53,57,60]],[40,[56,59,64]],[45,[57,60,64]],[43,[55,59,62]],[41,[53,57,60]],[40,[56,59,64]]],
+  lead:[[0,93,1],[1,88,1],[2,84,1],[3,88,1],[4,93,2],[6,88,2],[8,93,1],[9,88,1],[10,84,1],[11,88,1],[12,93,4],[16,91,1],[17,86,1],[18,83,1],[19,86,1],[20,91,2],[22,86,2],[24,91,1],[25,86,1],[26,83,1],[27,86,1],[28,91,4],[32,89,1],[33,84,1],[34,81,1],[35,84,1],[36,89,2],[38,84,2],[40,89,1],[41,84,1],[42,81,1],[43,84,1],[44,89,4],[48,88,1],[49,83,1],[50,80,1],[51,83,1],[52,88,2],[54,83,2],[56,88,2],[58,80,2],[60,83,4]]}
+];
+SONGS.forEach(S=>{S.L={};S.lead.forEach(n=>S.L[n[0]]=[n[1],n[2]])});
+const CMPAT=[[0,8],[0,4,8,12],[0,4,8,10,12,14],[0,2,4,6,8,10,12,14]];
+function cmNow(){return AC?AC.currentTime:CM.vt}
+function cmStepT(i){return CM.t0+i*CM.spb/4}
+function cN(t,m,d,type,v,det){
+  if(!AC||muted||!CM.gain)return;
+  const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=mHz(m);if(det)o.detune.value=det;
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.008);g.gain.setValueAtTime(v,t+Math.max(.01,d*.55));g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g);g.connect(CM.gain);o.start(t);o.stop(t+d+.03);
+}
+function cK(t){
+  if(!AC||muted||!CM.gain)return;
+  const o=AC.createOscillator(),g=AC.createGain();o.type='sine';
+  o.frequency.setValueAtTime(160,t);o.frequency.exponentialRampToValueAtTime(40,t+.12);
+  g.gain.setValueAtTime(.55,t);g.gain.exponentialRampToValueAtTime(.001,t+.16);
+  o.connect(g);g.connect(CM.gain);o.start(t);o.stop(t+.2);
+}
+function cNs(t,dur,vol,hp){
+  if(!AC||muted||!CM.gain)return;
+  if(!CM.nb){CM.nb=AC.createBuffer(1,Math.floor(AC.sampleRate*.6),AC.sampleRate);const a=CM.nb.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1}
+  const src=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();
+  src.buffer=CM.nb;f.type='highpass';f.frequency.value=hp;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  src.connect(f);f.connect(g);g.connect(CM.gain);src.start(t);src.stop(t+dur+.02);
+}
+function cmSched(i,t){
+  const S=SONGS[CM.song],bar=(i>>4)&7,s=i&15,ch=S.ch[bar],B=bar>=4,sp=CM.spb/4,intro=i<32;
+  if(s===0)ch[1].forEach(n=>cN(t,n,sp*15,'triangle',.028));
+  if(s%2===0||(B&&s%4===3))cN(t,ch[0]+((s>>1)%2?12:0),sp*1.6,B?'sawtooth':'triangle',B?.1:.22);
+  cN(t,ch[1][(B?[0,2,1,2]:[0,1,2,1])[s&3]]+12,sp*.8,'square',B?.032:.025);
+  const L=!intro&&S.L[i%64];if(L){cN(t,L[0],sp*L[1]*.95,'square',.06);cN(t,L[0],sp*L[1]*.95,'sawtooth',.024,9)}
+  if(S.kick.indexOf(s)>=0)cK(t);
+  if(S.sn.indexOf(s)>=0){cNs(t,.13,.15,1400);cN(t,52,.07,'triangle',.1)}
+  if(S.hat||s%2===0)cNs(t,.04,s%2?.02:.04,7000);
+  if(s===0&&(bar===0||bar===4))cNs(t,.6,.08,3000);
+}
+function cmStart(){
+  if(CM.on)return;
+  let sel=CM.sel;
+  if(sel>=SONGS.length)sel=(CM.lastSong+1+Math.floor(Math.random()*(SONGS.length-1)))%SONGS.length; // shuffle: never the same song twice in a row
+  CM.song=sel;CM.lastSong=sel;
+  const S=SONGS[sel];CM.spb=60/S.bpm;
+  CM.Tb=Math.max(2,Math.min(7,(CUBEOPT.sp<.8?6:CUBEOPT.sp<1.2?4:CUBEOPT.sp<1.6?3:2)+GDIFF[cDiff].cTb)); // beats a cube takes to fly in
+  CM.lane=Math.floor(CUBE_LANES.length/2);
+  if(AC){
+    CM.gain=AC.createGain();CM.gain.gain.value=.0001;CM.gain.connect(AC.destination);
+    const d=AC.createDelay(1),fb=AC.createGain(),wet=AC.createGain();d.delayTime.value=CM.spb*.75;fb.gain.value=.28;wet.gain.value=.18;
+    CM.gain.connect(d);d.connect(fb);fb.connect(d);d.connect(wet);wet.connect(AC.destination);CM.fx=[d,fb,wet];
+    CM.gain.gain.linearRampToValueAtTime(.42,AC.currentTime+.3);
+  }
+  CM.t0=cmNow()+.2;CM.next=0;CM.ev=32;CM.lastEv=0;CM.on=true;
+  showBanner('♪ '+S.n,2200);
+}
+function cmStop(slow){
+  if(!CM.on)return;CM.on=false;
+  const g=CM.gain,fx=CM.fx;CM.gain=null;CM.fx=null;
+  if(g&&AC){const t=AC.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(Math.max(.0001,g.gain.value),t);g.gain.linearRampToValueAtTime(.0001,t+(slow?.55:.2));
+    setTimeout(()=>{try{g.disconnect();if(fx)fx.forEach(n=>n.disconnect())}catch(e){}},2500)}
+  cubeMat.emissiveIntensity=.6;if(cLane)cLane.children.forEach(m=>m.material.opacity=.25);
+}
+function cmSyncAudio(dt){
+  const alive=CUBE.on&&!CUBE.dead&&started;
+  if(CM.on&&!alive)cmStop(CUBE.dead);
+  const blocked=alive&&(uiOpen||paused);
+  if(AC){if(blocked&&AC.state==='running')AC.suspend();else if(!blocked&&AC.state==='suspended')AC.resume()}
+  if(alive&&!blocked){
+    CM.vt+=dt;
+    if(!CM.on)cmStart();
+    const now=cmNow();while(CM.next*CM.spb/4+CM.t0<now+.3){cmSched(CM.next,cmStepT(CM.next));CM.next++}
+  }
+}
+function cmMake(tA,z,gold){
+  const m=new THREE.Mesh(cubeGeo,gold?goldMat:cubeMat);m.castShadow=true;m.add(new THREE.LineSegments(edgeGeo,cubeEdge));
+  const sp=(CM_XC+32)/(CM.Tb*CM.spb),x=CM_XC-(tA-cmNow())*sp;
+  m.position.set(x,1.3,z);scene.add(m);
+  CUBE.list.push({m,x,z,y:1.3,sp,tA,gold:!!gold});
+}
+// every cube is timed to touch the ball exactly on a beat; later waves just use more of the beats
+function cmSpawnTick(){
+  if(!CM.on)return;
+  const now=cmNow(),span=CM.Tb*CM.spb,L=CUBE_LANES.length;
+  for(;;){
+    const i=CM.ev,tA=cmStepT(i);
+    if(tA-now>span)break;
+    CM.ev++;
+    const s=i&15,bar=i>>4,h=CUBE.hits,lv=Math.max(0,Math.min(3,(h<8?0:h<20?1:h<40?2:3)+GDIFF[cDiff].cOff));
+    if(CMPAT[lv].indexOf(s)<0)continue;
+    let li=CM.lane;const gap=i-CM.lastEv;CM.lastEv=i;
+    if(gap>=2&&L>1&&Math.random()<(gap>=4?.85:.6)){
+      const st=(gap>=8&&Math.random()<.35)?2:1;let dir=Math.random()<.5?-1:1;
+      if(li+dir*st<0||li+dir*st>L-1)dir=-dir;            // bounce off the edge lanes
+      li=Math.max(0,Math.min(L-1,li+dir*st));
+    }
+    CM.lane=li;
+    const gold=h>=3&&s===0&&(bar&3)===3&&Math.random()<Math.min(1,CUBEOPT.gold*3);
+    cmMake(tA,CUBE_LANES[li],gold);
+    if(lv>=2&&s%8===0&&Math.random()<.2&&L>1)cmMake(tA,CUBE_LANES[li+(li<L-1?1:-1)],false);
+  }
+}
+function cmPulse(){
+  if(!CM.on)return;
+  const ph=(cmNow()-CM.t0)/CM.spb,f=ph-Math.floor(ph),p=ph<0?0:Math.max(0,1-f*3.2);
+  cubeMat.emissiveIntensity=.6+p;
+  if(cLane)cLane.children.forEach(m=>m.material.opacity=.25+p*.4);
+}
+// sounds you make land on the nearest 16th of the beat, in the key of the song
+function cmQ(){const now=cmNow(),q=CM.spb/4,k=Math.round((now-CM.t0)/q),tq=CM.t0+k*q;return{k,t:Math.abs(tq-now)<.07?Math.max(now+.004,tq):now+.004}}
+function cmTri(k){return SONGS[CM.song].ch[(k>>4)&7][1]}
+function cmHit(){
+  if(!CM.on||!AC||muted||!CM.gain)return;
+  const q=cmQ(),tri=cmTri(q.k),n=[tri[0],tri[1],tri[2],tri[0]+12,tri[1]+12,tri[2]+12],m=n[(CUBE.streak+59)%6]+12;
+  cN(q.t,m,CM.spb*.8,'square',.12);cN(q.t,m+12,CM.spb*.5,'triangle',.05);
+}
+function cmArp(){
+  if(!CM.on||!AC||muted||!CM.gain)return;
+  const q=cmQ(),tri=cmTri(q.k),n=[tri[0]+12,tri[1]+12,tri[2]+12,tri[0]+24];
+  n.forEach((m,j)=>{const t=Math.max(q.t,cmStepT(q.k+j));cN(t,m,CM.spb*.35,'square',.1)});
+}
+function cmGold(){
+  if(!CM.on||!AC||muted||!CM.gain)return;
+  const q=cmQ(),tri=cmTri(q.k);cN(q.t,tri[2]+24,CM.spb*.6,'triangle',.12);cN(q.t,tri[0]+36,CM.spb*.6,'triangle',.07);
+}
 
 
 // ---- MODE CHOOSER: animated example of each mode ----
 (function(){
   const row=$('mdrow');
   row.innerHTML='<div class="mdc" id="mdclassic" role="button" tabindex="0"><canvas id="mdcv1" width="480" height="360"></canvas><div class="t">🏗 CLASSIC</div><div class="d">Smash the towers before time runs out</div></div>'+
-   '<div class="mdc" id="mdcube" role="button" tabindex="0"><canvas id="mdcv2" width="480" height="360"></canvas><div class="t">🧊 CUBE RUSH</div><div class="d">Hit every cube. Miss one and it is over</div></div>';
+   '<div class="mdc" id="mdcube" role="button" tabindex="0"><canvas id="mdcv2" width="480" height="360"></canvas><div class="t">🧊 CUBE RUSH</div><div class="d">Miss a cube and lose a heart</div></div>';
   const st=document.createElement('style');
   st.textContent='#mdrow .mdc{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;background:#0b1240;border:2px solid #00e5ff;border-radius:6px;box-shadow:4px 4px 0 #000;cursor:pointer;color:#fff;text-align:center}'+
    '#mdrow .mdc canvas{position:static;width:100%;max-width:200px;height:auto;aspect-ratio:4/3;border-radius:4px;pointer-events:none}'+
@@ -3217,7 +3418,7 @@ Object.assign(SPM,{ice:15,sticky:16,bedrock:17,heart:18,star:19});
 ['❄','🍯','🪨','❤','🌟'].forEach(n=>SPSYM.push(n));
 const iceM=new CANNON.Material('ice'),stM=new CANNON.Material('sticky'),blkM=new CANNON.Material('blk');
 const CMS={
-  bb:new CANNON.ContactMaterial(blkM,blkM,{friction:.45,restitution:.15}),
+  bb:new CANNON.ContactMaterial(blkM,blkM,{friction:.45,restitution:.14}),
   ib:new CANNON.ContactMaterial(iceM,blkM,{friction:.02,restitution:.1}),
   ii:new CANNON.ContactMaterial(iceM,iceM,{friction:.01,restitution:.1}),
   sb:new CANNON.ContactMaterial(stM,blkM,{friction:1.6,restitution:0}),
@@ -4232,6 +4433,42 @@ body .logo{animation:woUiEnter .5s ease both,woGlow 3.5s ease-in-out 1s infinite
 // Populate the visible home-screen leaderboard preview on startup.
 if (document.getElementById("lbpreview")) loadGlobalBoard();
 
+
+// ---- CUBE RUSH SETUP SCREEN: pick song + difficulty when you press Cube Rush ----
+(function(){
+  const bs='display:block;width:100%;margin:8px 0 0;font-size:15px;padding:12px';
+  const w=document.createElement('div');
+  w.innerHTML='<div id="cbsetup" class="ov hide" style="z-index:40"><div class="card" style="max-width:460px"><div class="logo small">🧊 CUBE RUSH</div>'+
+   '<div class="sm sec">Song</div><div id="cbsongs" style="max-height:32vh;overflow-y:auto;padding-right:4px"></div>'+
+   '<div class="sm sec">Difficulty</div><div id="cbdiff" style="display:flex;gap:6px"></div><div class="tag" id="cbdinfo" style="margin-top:6px;font-size:11px"></div>'+
+   '<button class="pri" id="cbgo" style="'+bs+'">Start ▶</button><button class="bk" id="cbsback" style="'+bs+'">◀ Back</button></div></div>';
+  document.body.appendChild(w.firstChild);
+  const INFO=['5 hearts · fewer cubes, they arrive slower · score x0.75','3 hearts · the standard Cube Rush · score x1','2 hearts · busier waves from the start · score x1.5','1 heart · fast, packed with cubes · score x2'];
+  let ctx='mode';
+  function render(){
+    const L=$('cbsongs');L.innerHTML='';
+    SONGS.concat([{n:'Shuffle',sh:1}]).forEach((S,i)=>{
+      const b=document.createElement('button'),on=CM.sel===i;b.type='button';
+      b.textContent=(S.sh?'🔀 Shuffle · a different song each run':'🎵 '+S.n+' · '+S.bpm+' BPM');
+      b.style.cssText='display:block;width:100%;margin:6px 0 0;padding:9px 10px;font-size:13px;font-weight:900;text-align:left;text-transform:none;letter-spacing:0;border:2px solid #00e5ff;border-radius:4px;background:'+(on?'#ffd000':'#101744')+';color:'+(on?'#000':'#fff');
+      b.onclick=()=>{audioInit();CM.sel=i;lsSet('wo_csong',String(i));render();if(!S.sh)tone(mHz(S.ch[0][1][0]+12),.15,'square',.08,1)};
+      L.appendChild(b);
+    });
+    const D=$('cbdiff');D.innerHTML='';
+    GDIFF.forEach((d,i)=>{
+      const b=document.createElement('button'),on=cDiff===i;b.type='button';b.textContent=d.i+' '+d.n;
+      b.style.cssText='flex:1;min-width:0;padding:10px 2px;font-size:12px;font-weight:900;text-transform:none;letter-spacing:0;border:2px solid '+d.col+';border-radius:4px;background:'+(on?d.col:'#101744')+';color:'+(on?'#000':'#fff');
+      b.onclick=()=>{audioInit();cDiff=i;lsSet('wo_cdiff',String(i));render()};D.appendChild(b);
+    });
+    $('cbdinfo').textContent=INFO[cDiff]+' · your best: '+cubeBestGet();
+  }
+  function open(c){ctx=c;if(CM.sel>SONGS.length)CM.sel=0;render();$('cbsetup').classList.remove('hide')}
+  $('mdcube').onclick=()=>{audioInit();open('mode')};
+  $('cbsback').onclick=()=>$('cbsetup').classList.add('hide');
+  $('cbgo').onclick=()=>{audioInit();$('cbsetup').classList.add('hide');if(ctx==='over')$('cbov').classList.add('hide');startCube()};
+  const rt=$('cbretry');
+  if(rt){const b=document.createElement('button');b.className='bk';b.style.cssText=bs;b.textContent='🎵 Song & difficulty';b.onclick=()=>{audioInit();open('over')};rt.insertAdjacentElement('afterend',b)}
+})();
 </script><script>
 (function(){
  const el=id=>document.getElementById(id),today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
