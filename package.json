@@ -1,0 +1,35 @@
+{
+  "name": "wrecking-orbit",
+  "productName": "Wrecking Orbit",
+  "version": "1.0.0",
+  "description": "Wrecking Orbit",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.wreckingorbit.game",
+    "productName": "Wrecking Orbit",
+    "files": [
+      "main.js",
+      "index.html",
+      "package.json",
+      "icon.ico"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "mac": {
+      "target": "dmg"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
+  }
+}
