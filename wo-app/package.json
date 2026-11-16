@@ -1,3 +1,4 @@
+
 {
   "name": "wrecking-orbit",
   "productName": "Wrecking Orbit",
@@ -17,6 +18,11 @@
       "package.json",
       "icon.ico"
     ],
+    "publish": {
+      "provider": "github",
+      "owner": "hadhalamir-design",
+      "repo": "WreckingOrbit"
+    },
     "win": {
       "target": "nsis",
       "icon": "icon.ico"
