@@ -5639,8 +5639,8 @@ applySkin=function(i){
  else if(m.map){m.map=null;m.metalness=.5;m.roughness=.35}
  m.needsUpdate=true;
 };
-/* one-time grant: player already owns the Dragon Ball */
-try{if(!localStorage.getItem('wo_dragon_gift')){localStorage.setItem('wo_dragon_gift','1');if(owned.indexOf(DI)<0)owned.push(DI);lsSet('wo_owned',JSON.stringify(owned));skinIdx=DI;lsSet('wo_skin',DI)}}catch(e){}
+/* No automatic Dragon Ball grant: preserve existing ownership/equip saves,
+   but new players do not receive or equip it automatically. */
 applySkin(skinIdx);
 
 /* ---- 3D dragon ---- */
